@@ -1,0 +1,9 @@
+.search-group {
+    display: grid;
+    justify-self: center;
+    gap: 1rem;
+}
+
+.search-group__search-bar {
+    padding: var(--spacing-xs)
+}
