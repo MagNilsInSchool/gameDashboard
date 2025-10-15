@@ -1,0 +1,26 @@
+.round-button-group {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.round-button-group__text {
+    font-size: 1.2rem;
+}
+
+.round-button-group__button {
+    background-color: var(--main-400);
+    padding: .8rem;
+    border-radius: 50%;
+    position: relative;
+    display: grid;
+    border: 1px solid var(--black);
+    cursor: pointer;
+}
+
+.round-button-group__button--text {
+    place-self: center;
+    margin-top: 2px;
+    position: absolute;
+    font-size: 1.1rem;
+}

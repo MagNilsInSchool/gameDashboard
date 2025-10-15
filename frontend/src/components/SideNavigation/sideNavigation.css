@@ -1,0 +1,24 @@
+.side-navigation {
+    grid-column: 1/2;
+    grid-row: 1/-1;
+    padding-block: 1rem;
+    background-color: var(--main-200);
+    border-right: 2px solid var(--main-300);
+}
+
+.side-navigation__link {
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: var(--black);
+    gap: var(--spacing-xs);
+}
+
+.side-navigation__list {
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.side-navigation__list-item {
+    min-width: 4rem;
+}

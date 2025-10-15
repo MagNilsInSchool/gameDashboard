@@ -1,0 +1,88 @@
+:root {
+    --main-100: #fff;
+    --main-200: #EEEEEE;
+    --main-300: #CCCCCC;
+    --main-400: #666666;
+    --white: #fff;
+    --black: #282D32;
+
+    --3d-shadow: inset 2px 2px 0 0 rgba(255, 255, 255, 0.2), inset -3px -3px 0 0 rgba(0, 0, 0, 0.15);
+    --3d-shadow-big: inset 3px 3px 0 0 rgba(255, 255, 255, 0.2), inset -4px -4px 0 0 rgba(0, 0, 0, 0.15);
+    --3d-shadow-reverse: inset -3px -3px 0 0 rgba(255, 255, 255, 0.2), inset 2px 2px 0 0 rgba(0, 0, 0, 0.35);
+    --3d-shadow-reverse--small: inset -1px -1px 0 0 rgba(255, 255, 255, 0.2), inset 2px 2px 0 0 rgba(0, 0, 0, 0.35);
+
+    --accent1: #DC4031;
+    --accent2: #F4D57A;
+
+
+    --bread-font: Arial, sans-serif;
+    --title-font: Arial, sans-serif;
+
+    --font-size-xs: 0.75rem;
+    --font-size-s: 0.875rem;
+    --font-size-m: 1rem;
+    --font-size-l: 1.25rem;
+    --font-size-xl: 1.5rem;
+
+    --text-outline--black: 1px 1px var(--black), -1px -1px var(--black), 1px -1px var(--black),
+        -1px 1px var(--black);
+    --text-outline--white: 1px 1px var(--white), -1px -1px var(--white), 1px -1px var(--white),
+        -1px 1px var(--white);
+    --text-outline--accent-2: 1px 1px var(--accent2), -1px -1px var(--accent2), 1px -1px var(--accent2),
+        -1px 1px var(--accent2);
+
+    --spacing-xs: .25rem;
+    --spacing-s: .5rem;
+    --spacing-m: .75rem;
+    --spacing-l: 1rem;
+    --spacing-xl: 1.5rem;
+    --spacing-xxl: 1.75rem;
+    --spacing-xxxl: 2rem;
+    --spacing-xxxxl: 3rem;
+
+    --app-padding-block: var(--spacing-xxxxl) var(--spacing-s);
+    --app-padding-inline: var(--spacing-s);
+    --max-width: 1180px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* outline: 1px solid red; */
+}
+
+body {
+    font-family: var(--bread-font);
+    background-color: var(--main-100);
+    color: var(--black);
+
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--title-font);
+}
+
+.wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    height: 100dvh;
+
+}
+
+.wrapper--max-width {
+    max-width: var(--max-width);
+    padding-inline: 1rem;
+    margin: 0 auto;
+}
+
+.shared-page-style {
+    background-color: var(--main-100);
+    grid-column: 2/3;
+}

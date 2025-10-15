@@ -1,0 +1,10 @@
+.header {
+    background-color: blueviolet;
+
+    padding-block: 1rem;
+}
+
+.header__wrapper {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+}
