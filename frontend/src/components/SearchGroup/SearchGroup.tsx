@@ -4,7 +4,7 @@ import "./searchGroup.css";
 const SearchGroup: React.FC = () => {
     return (
         <article className="search-group">
-            <input type="text" placeholder="search" className="search-group__search-bar" />
+            <input className="search-group__search-bar" type="text" name="search" placeholder="search" />
             <ProfileCarousel />
         </article>
     );

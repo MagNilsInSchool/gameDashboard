@@ -12,7 +12,7 @@ const Header: React.FC<Props> = ({ beans }) => {
             <div className="header__wrapper wrapper--max-width">
                 <WeatherDisplay />
                 <SearchGroup />
-                <RoundButtonGroup textContent="Add user" />
+                <RoundButtonGroup textContent="Add User" />
             </div>
         </header>
     );

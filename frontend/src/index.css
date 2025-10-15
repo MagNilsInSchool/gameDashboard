@@ -85,4 +85,5 @@ h6 {
 .shared-page-style {
     background-color: var(--main-100);
     grid-column: 2/3;
+    padding-block: 1rem;
 }

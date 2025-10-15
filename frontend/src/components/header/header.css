@@ -1,6 +1,5 @@
 .header {
-    background-color: blueviolet;
-
+    background-color: var(--main-100);
     padding-block: 1rem;
 }
 

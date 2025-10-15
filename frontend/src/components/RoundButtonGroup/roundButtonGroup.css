@@ -2,25 +2,35 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+    place-self: end;
 }
 
 .round-button-group__text {
-    font-size: 1.2rem;
+    font-size: var(--font-size-xl);
 }
 
 .round-button-group__button {
-    background-color: var(--main-400);
-    padding: .8rem;
+    background-color: var(--main-300);
+    aspect-ratio: 1;
+    width: 2rem;
     border-radius: 50%;
     position: relative;
     display: grid;
-    border: 1px solid var(--black);
-    cursor: pointer;
+    border: 2px solid var(--black);
+    transition: all .15s ease-in-out;
 }
 
 .round-button-group__button--text {
     place-self: center;
     margin-top: 2px;
     position: absolute;
-    font-size: 1.1rem;
+    font-size: var(--font-size-l);
+    font-weight: 500;
+}
+
+@media (pointer: fine) {
+    .round-button-group__button:hover {
+        transform: scale(1.1) translateY(-3px);
+        cursor: pointer;
+    }
 }
