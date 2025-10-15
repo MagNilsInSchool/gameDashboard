@@ -1,0 +1,23 @@
+.game-card {
+    background-color: var(--main-200);
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    transition: all .15s ease-in-out;
+}
+
+.game-card__title {
+    place-self: center;
+}
+
+.game-card__image {
+    width: 100%;
+    height: auto;
+}
+
+@media (pointer: fine) {
+    .game-card:hover {
+        transform: scale(1.03) translateY(-5px);
+        cursor: pointer;
+    }
+}
