@@ -13,7 +13,7 @@ const LandingPage = () => {
         { id: 8, firstName: "Bean", lastName: "Beanarius", src: "assets/icons/user-filled.svg" },
     ];
     return (
-        <main className=" shared-page-style">
+        <main className="shared-page-style">
             <div className="landing-page wrapper--max-width">
                 {users.map((user) => (
                     <ProfileCard
