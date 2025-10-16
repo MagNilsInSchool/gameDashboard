@@ -1,6 +1,7 @@
 .profile-card {
     display: grid;
     grid-template-rows: 1fr auto;
+    max-width: 17rem;
     width: 100%;
     row-gap: var(--spacing-l);
     cursor: pointer;

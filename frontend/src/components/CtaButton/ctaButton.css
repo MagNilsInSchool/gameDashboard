@@ -1,0 +1,38 @@
+.cta-button {
+    border: 2px solid var(--black);
+    box-shadow: 2px 2px 0 0 var(--black);
+    transition: all .15s ease-in-out;
+}
+
+.cta-button--small {}
+
+.cta-button--medium {}
+
+.cta-button--large {
+    font-size: var(--font-size-xl);
+    padding: .5rem 3rem;
+}
+
+.cta-button--giant {}
+
+.cta-button--light {
+    background-color: var(--main-100);
+    color: var(--black);
+    font-weight: 600;
+}
+
+.cta-button--dark {
+    background-color: var(--main-400);
+    color: var(--main-100);
+}
+
+@media (pointer: fine) {
+    .cta-button--large:hover {
+        transform: scale(1.02) translateY(-5px);
+        cursor: pointer;
+    }
+
+    .cta-button--light:hover {
+        background-color: rgb(243, 242, 242);
+    }
+}

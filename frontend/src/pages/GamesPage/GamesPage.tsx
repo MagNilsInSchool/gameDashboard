@@ -1,16 +1,8 @@
 import GameCard from "../../components/GameCard/GameCard";
+import useUsersStore from "../../stores/usersStore";
 import "./gamesPage.css";
 const GamesPage: React.FC = () => {
-    const games = [
-        { id: 1, title: "Beantown", src: "assets/icons/game-logo.svg" },
-        { id: 2, title: "Revenge of beans!", src: "assets/icons/game-logo.svg" },
-        { id: 3, title: "Can it be beans?", src: "assets/icons/game-logo.svg" },
-        { id: 4, title: "Are you kidney beans?", src: "assets/icons/game-logo.svg" },
-        { id: 5, title: "Bunda bean", src: "assets/icons/game-logo.svg" },
-        { id: 6, title: "Grand theft bean", src: "assets/icons/game-logo.svg" },
-        { id: 7, title: "A can of beans", src: "assets/icons/game-logo.svg" },
-        { id: 8, title: "Beantown 2", src: "assets/icons/game-logo.svg" },
-    ];
+    const { games } = useUsersStore();
     return (
         <main className="shared-page-style">
             <div className="games-page wrapper--max-width">

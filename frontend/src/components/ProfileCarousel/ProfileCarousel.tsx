@@ -2,12 +2,12 @@ import "./profileCarousel.css";
 
 const ProfileCarousel: React.FC = () => {
     const profiles = [
-        { src: "assets/icons/user-filled.svg" },
-        { src: "assets/icons/user-filled.svg" },
-        { src: "assets/icons/user-filled.svg" },
-        { src: "assets/icons/user-filled.svg" },
-        { src: "assets/icons/user-filled.svg" },
-        { src: "assets/icons/user-filled.svg" },
+        { src: "/assets/icons/user-filled.svg" },
+        { src: "/assets/icons/user-filled.svg" },
+        { src: "/assets/icons/user-filled.svg" },
+        { src: "/assets/icons/user-filled.svg" },
+        { src: "/assets/icons/user-filled.svg" },
+        { src: "/assets/icons/user-filled.svg" },
     ];
     return (
         <article className="profile-carousel">
@@ -20,8 +20,8 @@ const ProfileCarousel: React.FC = () => {
                 />
             </button>
             <ul className="profile-carousel__profile-list">
-                {profiles.map((profile) => (
-                    <li className="profile-carousel__profile-list-item">
+                {profiles.map((profile, i) => (
+                    <li className="profile-carousel__profile-list-item" key={i}>
                         <img src={profile.src} alt="profile picture" className="profile-carousel__profile-picture" />
                     </li>
                 ))}
