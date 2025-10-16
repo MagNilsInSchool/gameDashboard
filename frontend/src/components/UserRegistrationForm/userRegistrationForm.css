@@ -1,0 +1,28 @@
+.user-registration-form {
+    display: grid;
+    place-items: start center;
+    gap: var(--spacing-xl);
+    background-color: var(--main-200);
+    padding-top: 5rem;
+    width: 100%;
+    border-radius: 1rem;
+    min-height: 70vh;
+}
+
+.user-registration-form__inner-wrapper {
+    max-width: 37rem;
+    width: 100%;
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.user-registration-form__submit-button {
+    align-self: start;
+}
+
+
+
+.user-registration-form__row-wrapper {
+    display: flex;
+    justify-content: space-between;
+}

@@ -16,16 +16,15 @@
     border-radius: 50%;
     position: relative;
     display: grid;
-    border: 2px solid var(--black);
+    border: var(--border);
     transition: all .15s ease-in-out;
 }
 
-.round-button-group__button--text {
+.round-button-group__button-image {
     place-self: center;
-    margin-top: 2px;
+
     position: absolute;
-    font-size: var(--font-size-l);
-    font-weight: 500;
+
 }
 
 @media (pointer: fine) {
