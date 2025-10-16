@@ -1,0 +1,32 @@
+.game-timer {
+    width: 100%;
+    place-self: center;
+    display: grid;
+    place-items: center;
+    gap: var(--spacing-xl);
+    max-width: 37rem;
+    width: 100%;
+}
+
+.game-timer__inner-wrapper {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--main-200);
+    gap: var(--spacing-xxxxl);
+    padding: var(--spacing-xl);
+    border-radius: var(--spacing-l);
+    align-items: center;
+    width: 100%;
+}
+
+.game-timer__title {
+    background-color: var(--main-300);
+    padding: var(--spacing-s) var(--spacing-l);
+    font-size: var(--font-size-l);
+    border-radius: 2rem;
+}
+
+.game-timer__time-display {
+    font-size: 3rem;
+    font-weight: 600;
+}

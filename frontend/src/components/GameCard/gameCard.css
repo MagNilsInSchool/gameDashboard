@@ -3,6 +3,7 @@
     border-radius: 8px;
     padding: 2rem;
     width: 100%;
+    max-width: 270px;
     transition: all .15s ease-in-out;
 }
 
