@@ -7,7 +7,7 @@
 
 .games-page__speach-bubble {
     padding: 1.5rem;
-    border: 2px solid var(--black);
+    border: var(--border);
     width: fit-content;
     place-self: end;
     grid-column: 1/-1;

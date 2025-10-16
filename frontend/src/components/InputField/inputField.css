@@ -1,0 +1,10 @@
+.input-field {
+    display: grid;
+    gap: var(--spacing-s);
+}
+
+.input-field__input {
+    padding: var(--spacing-s);
+    border: var(--border);
+    border-radius: 4px;
+}

@@ -3,6 +3,7 @@ import LandingPage from "../pages/LandingPage/LandingPage";
 import GamesPage from "../pages/GamesPage/GamesPage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import PlayingPage from "../pages/PlayingPage/PlayingPage";
+import RegisterUserPage from "../pages/RegisterUserPage/RegisterUserPage";
 
 const RoutesComponent: React.FC = () => {
     return (
@@ -10,7 +11,8 @@ const RoutesComponent: React.FC = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/games" element={<GamesPage />} />
             <Route path="/games/play/:id" element={<PlayingPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/users/register" element={<RegisterUserPage />} />
+            <Route path="/users/:id" element={<ProfilePage />} />
         </Routes>
     );
 };
