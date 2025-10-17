@@ -55,7 +55,7 @@ const ImgSelector: React.FC<Props> = ({ name = "profile", initialSrc, onFileChan
             <span className="image-selector__label">Profile Picture</span>
             <img src={preview} alt="Profile preview" className="image-selector__img" />
             <button className="image-selector__button" onClick={handleBrowseButton} type="button">
-                UPLOAD
+                BROWSE
             </button>
 
             {error && (

@@ -1,8 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import "./sideNavigation.css";
+import useUsersStore from "../../stores/usersStore";
 
 const SideNavigation = () => {
     const location = useLocation();
+    const { user } = useUsersStore();
 
     const routes = [
         {
@@ -20,7 +22,7 @@ const SideNavigation = () => {
             alt: "A d-pad from a gaming controller.",
         },
         {
-            route: "/profile",
+            route: `/users/${user.id}`,
             text: "Profile",
             activeSrc: "/assets/icons/user-filled.svg",
             inactiveSrc: "/assets/icons/user.svg",

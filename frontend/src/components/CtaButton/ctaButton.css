@@ -20,9 +20,11 @@
     padding: .5rem 3rem;
 }
 
-/* .cta-button--giant {
+.cta-button--giant {
     font-weight: 600;
-    } */
+    font-size: var(--font-size-m);
+    padding: var(--spacing-xl)
+}
 
 .cta-button--light {
     background-color: var(--main-100);
@@ -43,6 +45,11 @@
 
     .cta-button--medium:hover {
         transform: scale(1.02) translateY(-2px);
+        cursor: pointer;
+    }
+
+    .cta-button--giant:hover {
+        transform: scale(1.01) translateY(-5px);
         cursor: pointer;
     }
 

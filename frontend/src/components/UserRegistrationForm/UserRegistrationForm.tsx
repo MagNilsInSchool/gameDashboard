@@ -19,8 +19,8 @@ const UserRegistrationForm: React.FC = () => {
                     placeholder="example@example.com"
                     autoComplete="email"
                 />
-                <InputField labelText="First Name *" name="firstName" placeholder="Name" autoComplete="given-name" />
-                <InputField labelText="Last Name *" name="LastName" placeholder="Namesson" autoComplete="family-name" />
+                <InputField labelText="First name *" name="firstName" placeholder="Name" autoComplete="given-name" />
+                <InputField labelText="Last name *" name="LastName" placeholder="Nameson" autoComplete="family-name" />
                 <div className="user-registration-form__row-wrapper">
                     <ImgSelector />
                     <CtaButton

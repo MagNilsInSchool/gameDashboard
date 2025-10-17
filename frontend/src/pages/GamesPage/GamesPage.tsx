@@ -1,8 +1,9 @@
 import GameCard from "../../components/GameCard/GameCard";
-import useUsersStore from "../../stores/usersStore";
+import useGamesStore from "../../stores/gamesStore";
+
 import "./gamesPage.css";
 const GamesPage: React.FC = () => {
-    const { games } = useUsersStore();
+    const { games } = useGamesStore();
     return (
         <main className="shared-page-style">
             <div className="games-page wrapper--max-width">

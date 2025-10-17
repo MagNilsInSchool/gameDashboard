@@ -1,6 +1,7 @@
 .image-selector {
     display: grid;
-    width: fit-content;
+    width: 100%;
+    max-width: 6.25rem;
     place-items: center;
     gap: var(--spacing-m);
 }
@@ -25,12 +26,17 @@
 
 @media (pointer: fine) {
 
-
-    .image-selector__button:hover,
-    .image-selector__img:hover {
+    .image-selector:hover {
         cursor: pointer;
-        background-color: rgb(243, 242, 242);
+
+        .image-selector__button,
+        .image-selector__img {
+            cursor: pointer;
+            background-color: rgb(243, 242, 242);
+        }
     }
+
+
 
 
 }
