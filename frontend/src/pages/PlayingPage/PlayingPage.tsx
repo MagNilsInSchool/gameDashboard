@@ -1,13 +1,15 @@
 import { useParams } from "react-router-dom";
 import "./playingPage.css";
-import useUsersStore from "../../stores/usersStore";
 import GameCard from "../../components/GameCard/GameCard";
 import GameTimer from "../../components/GameTimer/GameTimer";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
+import useGamesStore from "../../stores/gamesStore";
+import useUsersStore from "../../stores/usersStore";
 
 const PlayingPage = () => {
     const { id } = useParams();
-    const { games, user } = useUsersStore();
+    const { games } = useGamesStore();
+    const { user } = useUsersStore();
     const currentGame = games[Number(id) - 1];
 
     return (
@@ -18,7 +20,7 @@ const PlayingPage = () => {
                     <GameTimer />
                 </div>
 
-                <ProfileCard firstName={user.firstName} lastName={user.lastName} src={user.src} userId={user.id} />
+                <ProfileCard user={user} />
             </div>
         </main>
     );

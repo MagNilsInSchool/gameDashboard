@@ -16,6 +16,10 @@
     background-color: var(--main-200);
 }
 
+.profile-card__name {
+    font-size: var(--font-size-l);
+}
+
 @media (pointer: fine) {
     .profile-card:hover {
         transform: scale(1.03) translateY(-5px);

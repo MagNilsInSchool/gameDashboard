@@ -1,19 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import "./profileCard.css";
+import type { iUser } from "../../interfaces/users";
 
 interface Props {
-    src: string;
-    firstName: string;
-    lastName: string;
-    userId: number;
+    user: iUser;
 }
 
-const ProfileCard: React.FC<Props> = ({ src, firstName, lastName, userId }) => {
+const ProfileCard: React.FC<Props> = ({ user }) => {
     const navigate = useNavigate();
     return (
-        <article className="profile-card" onClick={() => navigate(`/users/${userId}`)}>
-            <img className="profile-card__image" src={src} alt="This is a picture of user blabla" />
-            <h3 className="profile-card__name">{`${firstName} ${lastName}`}</h3>
+        <article className="profile-card" onClick={() => navigate(`/users/${user.id}`)}>
+            <img className="profile-card__image" src={user.src} alt="This is a picture of user blabla" />
+            <h3 className="profile-card__name">{`${user.firstName} ${user.lastName}`}</h3>
         </article>
     );
 };

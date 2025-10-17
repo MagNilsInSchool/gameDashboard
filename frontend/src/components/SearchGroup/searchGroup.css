@@ -5,5 +5,9 @@
 }
 
 .search-group__search-bar {
-    padding: var(--spacing-xs)
+    padding: var(--spacing-xs);
+    border: var(--border);
+    border-radius: 1rem;
+    padding: .3rem;
+    padding-left: .5rem;
 }

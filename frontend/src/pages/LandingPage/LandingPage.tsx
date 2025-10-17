@@ -16,13 +16,7 @@ const LandingPage = () => {
         <main className="shared-page-style">
             <div className="landing-page wrapper--max-width">
                 {users.map((user) => (
-                    <ProfileCard
-                        firstName={user.firstName}
-                        lastName={user.lastName}
-                        src={user.src}
-                        key={user.id}
-                        userId={user.id}
-                    />
+                    <ProfileCard user={user} key={user.id} />
                 ))}
             </div>
         </main>
