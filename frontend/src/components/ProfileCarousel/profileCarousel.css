@@ -1,0 +1,57 @@
+.profile-carousel {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--spacing-s);
+    place-items: center;
+}
+
+.profile-carousel__profile-list {
+    display: flex;
+    gap: var(--spacing-s);
+    list-style-type: none;
+}
+
+.profile-carousel__profile-list-item {
+    aspect-ratio: 1;
+    width: 2rem;
+    border-radius: 50%;
+    background-color: var(--main-300);
+    border: var(--border);
+    display: grid;
+    place-items: center;
+    transition: all .15s ease-in-out;
+}
+
+.profile-carousel__button {
+    position: relative;
+    background-color: var(--main-300);
+    border: var(--border);
+    border-radius: 50%;
+    display: grid;
+    aspect-ratio: 1;
+    width: 1.5rem;
+    transition: all .15s ease-in-out;
+}
+
+.profile-carousel__button-image {
+    position: absolute;
+    place-self: center;
+
+}
+
+.profile-carousel__button-image--right {
+    rotate: 180deg;
+    margin-right: -2px;
+}
+
+@media (pointer: fine) {
+    .profile-carousel__profile-list-item:hover {
+        transform: scale(1.15) translateY(-5px);
+        cursor: pointer;
+    }
+
+    .profile-carousel__button:hover {
+        transform: scale(1.15) translateY(-5px);
+        cursor: pointer;
+    }
+}

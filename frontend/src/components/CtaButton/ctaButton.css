@@ -1,0 +1,59 @@
+.cta-button {
+    border: var(--border);
+    box-shadow: 2px 2px 0 0 var(--black);
+    transition: all .15s ease-in-out;
+}
+
+.cta-button--medium {
+    font-size: var(--font-size-m);
+    padding: .1rem .7rem;
+    width: fit-content;
+}
+
+/* .cta-button--small {}*/
+
+
+
+.cta-button--large {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    padding: .5rem 3rem;
+}
+
+.cta-button--giant {
+    font-weight: 600;
+    font-size: var(--font-size-m);
+    padding: var(--spacing-xl)
+}
+
+.cta-button--light {
+    background-color: var(--main-100);
+    color: var(--black);
+
+}
+
+.cta-button--dark {
+    background-color: var(--main-400);
+    color: var(--main-100);
+}
+
+@media (pointer: fine) {
+    .cta-button--large:hover {
+        transform: scale(1.02) translateY(-5px);
+        cursor: pointer;
+    }
+
+    .cta-button--medium:hover {
+        transform: scale(1.02) translateY(-2px);
+        cursor: pointer;
+    }
+
+    .cta-button--giant:hover {
+        transform: scale(1.01) translateY(-5px);
+        cursor: pointer;
+    }
+
+    .cta-button--light:hover {
+        background-color: rgb(243, 242, 242);
+    }
+}

@@ -1,0 +1,35 @@
+.round-button-group {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    place-self: end;
+}
+
+.round-button-group__text {
+    font-size: var(--font-size-xl);
+}
+
+.round-button-group__button {
+    background-color: var(--main-300);
+    aspect-ratio: 1;
+    width: 2rem;
+    border-radius: 50%;
+    position: relative;
+    display: grid;
+    border: var(--border);
+    transition: all .15s ease-in-out;
+}
+
+.round-button-group__button-image {
+    place-self: center;
+
+    position: absolute;
+
+}
+
+@media (pointer: fine) {
+    .round-button-group__button:hover {
+        transform: scale(1.1) translateY(-3px);
+        cursor: pointer;
+    }
+}

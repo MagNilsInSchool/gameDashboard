@@ -1,0 +1,16 @@
+.playing-page {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    min-height: 100%;
+}
+
+.playing-page .profile-card {
+    place-self: end
+}
+
+.playing-page__game-display {
+    justify-items: center;
+    grid-column: 1/-1;
+    display: grid;
+    gap: 5rem;
+}

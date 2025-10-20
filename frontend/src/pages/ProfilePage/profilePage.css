@@ -1,0 +1,55 @@
+.profile-page {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    gap: var(--spacing-xxxxl);
+}
+
+.profile-page__row-wrapper {
+    display: flex;
+    gap: var(--spacing-xl);
+}
+
+.profile-page__column-wrapper {
+    flex: 1;
+}
+
+.profile-page__column-wrapper--split-rows {
+    display: grid;
+    gap: 2rem;
+}
+
+.profile-page__minutes-per-game-list {
+    display: grid;
+    background-color: var(--main-200);
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-l);
+    height: 100%;
+    width: 100%;
+}
+
+.profile-page__minutes-per-game-list-item {
+    display: flex;
+    align-items: center;
+}
+
+.profile-page__total-minute-tracker {
+    background-color: var(--main-200);
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    border-radius: 1.25rem;
+}
+
+.profile-page__total-minutes {
+    font-size: 2.25rem;
+}
+
+.profile-page__button-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.profile-page__cta-button {
+    width: 100%;
+}

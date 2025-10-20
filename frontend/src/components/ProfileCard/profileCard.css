@@ -1,0 +1,28 @@
+.profile-card {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    max-width: 17rem;
+    width: 100%;
+    row-gap: var(--spacing-l);
+    cursor: pointer;
+    transition: all .15s ease-in-out;
+}
+
+.profile-card__image {
+    object-fit: cover;
+    place-self: center;
+    width: 100%;
+    height: auto;
+    background-color: var(--main-200);
+}
+
+.profile-card__name {
+    font-size: var(--font-size-l);
+}
+
+@media (pointer: fine) {
+    .profile-card:hover {
+        transform: scale(1.03) translateY(-5px);
+        cursor: pointer;
+    }
+}

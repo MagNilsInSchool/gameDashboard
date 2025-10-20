@@ -1,0 +1,23 @@
+.weather-display {
+    display: grid;
+    max-height: 3.5rem;
+}
+
+
+
+.weather-display__date,
+.weather-display__temperature {
+    font-size: var(--font-size-m);
+    font-weight: 400;
+}
+
+.weather-display__weather {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.weather-display__weather-icon {
+    width: 1.3rem;
+    height: auto;
+}

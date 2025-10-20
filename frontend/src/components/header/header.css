@@ -1,0 +1,9 @@
+.header {
+    background-color: var(--main-100);
+    padding-block: 1rem;
+}
+
+.header__wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
