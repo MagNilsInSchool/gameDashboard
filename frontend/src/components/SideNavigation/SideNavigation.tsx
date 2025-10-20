@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import "./sideNavigation.css";
-import useUsersStore from "../../stores/usersStore";
+import useUserStore from "../../stores/userStore";
 
 const SideNavigation = () => {
     const location = useLocation();
-    const { user } = useUsersStore();
+    const { user } = useUserStore();
 
     const routes = [
         {

@@ -4,12 +4,12 @@ import GameCard from "../../components/GameCard/GameCard";
 import GameTimer from "../../components/GameTimer/GameTimer";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import useGamesStore from "../../stores/gamesStore";
-import useUsersStore from "../../stores/usersStore";
+import useUserStore from "../../stores/userStore";
 
 const PlayingPage = () => {
     const { id } = useParams();
     const { games } = useGamesStore();
-    const { user } = useUsersStore();
+    const { user } = useUserStore();
     const currentGame = games[Number(id) - 1];
 
     return (

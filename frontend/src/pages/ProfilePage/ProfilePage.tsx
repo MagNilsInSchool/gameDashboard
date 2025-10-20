@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import CtaButton from "../../components/CtaButton/CtaButton";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
-import useUsersStore from "../../stores/usersStore";
+import useUserStore from "../../stores/userStore";
 import "./profilePage.css";
 const ProfilePage: React.FC = () => {
-    const { user } = useUsersStore();
+    const { user } = useUserStore();
     const navigate = useNavigate();
 
     return (
