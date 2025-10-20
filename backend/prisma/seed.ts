@@ -4,27 +4,27 @@ const seed = async () => {
     const users = [
         {
             firstName: "Surely",
-            lastName: "Bean",
+            lastName: "Beans",
             email: "surely@example.com",
-            normalizedName: "surelybean",
+            normalizedName: "surely bean",
         },
         {
             firstName: "Barely",
-            lastName: "Bean",
+            lastName: "Beans",
             email: "barely@example.com",
-            normalizedName: "barelybean",
+            normalizedName: "barely bean",
         },
         {
             firstName: "Only",
             lastName: "Beans",
             email: "only@example.com",
-            normalizedName: "onlybeans",
+            normalizedName: "only beans",
         },
     ];
     const games = [
-        { title: "Grand theft bean", normalizedTitle: "grandtheftbean" },
-        { title: "Beany Kong", normalizedTitle: "beanykong" },
-        { title: "Super Bean brothers", normalizedTitle: "superbeanbrothers" },
+        { title: "Grand theft bean", normalizedTitle: "grand thef tbean" },
+        { title: "Beany Kong", normalizedTitle: "beany kong" },
+        { title: "Super Bean brothers", normalizedTitle: "super bean brothers" },
     ];
 
     await prisma.user.createMany({

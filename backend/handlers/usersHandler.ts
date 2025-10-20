@@ -15,14 +15,18 @@ export const getUsers = async (req: Request, res: Response) => {
 
         const where: Prisma.UserWhereInput = {};
 
-        if (validatedUserFilter.data.normalizedName)
+        let notFoundMessage = "No users found.";
+
+        if (validatedUserFilter.data.normalizedName) {
             where.normalizedName = {
                 contains: validatedUserFilter.data.normalizedName,
                 mode: "insensitive",
             };
+            notFoundMessage = `No user match your query: '${validatedUserFilter.data.normalizedName}'.`;
+        }
 
         const users: User[] = await prisma.user.findMany({ where, orderBy: { id: "asc" } });
-        if (users.length === 0) throw new CustomError("No users found.", 404);
+        if (users.length === 0) throw new CustomError(notFoundMessage, 404);
 
         return sendSuccessResponse(res, "Fetched users successfully.", users);
     } catch (error) {
