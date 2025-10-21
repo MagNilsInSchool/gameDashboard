@@ -40,12 +40,11 @@ const seed = async () => {
         prisma.user.findMany({ select: { id: true } }),
         prisma.game.findMany({ select: { id: true } }),
     ]);
-    const stats: { timePlayed: number; userId: number; gameId: number }[] = [];
+    const stats: { userId: number; gameId: number }[] = [];
     for (const user of allUsers) {
         const playedGames = allGames.slice(0, 2);
         for (const g of playedGames) {
             stats.push({
-                timePlayed: Math.floor(Math.random() * (60 * 60)) + 30,
                 userId: user.id,
                 gameId: g.id,
             });

@@ -1,98 +1,191 @@
-import { Prisma, PrismaClient, type User } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import type { Request, Response } from "express";
 import { sendSuccessResponse } from "../utils/responses/handleSuccessResponse.ts";
 import { CustomError, handleError } from "../utils/responses/handleErrorResponse.ts";
-import { type iUserUpdate, userCreationSchema, userFilterSchema, userUpdateSchema } from "../schemas/usersSchema.ts";
-import { normalizedUserName } from "../utils/index.ts";
 import { postGresIdSchema } from "../schemas/postgresIdSchema.ts";
+import { gameStatCreationSchema, gameStatFilterSchema } from "../schemas/gameStatSchema.ts";
 
 const prisma = new PrismaClient();
 
 export const getGamesStats = async (req: Request, res: Response) => {
-    // try {
-    //     const validatedUserFilter = userFilterSchema.safeParse(req.query);
-    //     if (!validatedUserFilter.success) throw validatedUserFilter.error;
-    //     const where: Prisma.UserWhereInput = {};
-    //     let notFoundMessage = "No users found.";
-    //     if (validatedUserFilter.data.normalizedName) {
-    //         where.normalizedName = {
-    //             contains: validatedUserFilter.data.normalizedName,
-    //             mode: "insensitive",
-    //         };
-    //         notFoundMessage = `No user match your query: '${validatedUserFilter.data.normalizedName}'.`;
-    //     }
-    //     const users: User[] = await prisma.user.findMany({ where, orderBy: { id: "asc" } });
-    //     if (users.length === 0) throw new CustomError(notFoundMessage, 404);
-    //     return sendSuccessResponse(res, "Fetched users successfully.", users);
-    // } catch (error) {
-    //     return handleError(error, res);
-    // }
+    try {
+        const validatedGameStatFilter = gameStatFilterSchema.safeParse(req.query);
+        if (!validatedGameStatFilter.success) throw validatedGameStatFilter.error;
+
+        const where: Prisma.GameStatWhereInput = {};
+        let notFoundMessage = "No gamestats found.";
+        const data = validatedGameStatFilter.data;
+        if (data) {
+            if (data.gameId && data.userId) {
+                where.userId = data.userId;
+                where.gameId = data.gameId;
+
+                notFoundMessage = `No stat match your query: userId: '${data.userId}', gameId: '${data.gameId}'.`;
+            } else {
+                if (data.userId) {
+                    where.userId = data.userId;
+                    notFoundMessage = `No stat match your userId query: '${data.userId}'.`;
+                }
+                if (data.gameId) {
+                    where.userId = data.gameId;
+                    notFoundMessage = `No stat match your gameId query: '${data.gameId}'.`;
+                }
+            }
+        }
+
+        const gameStats = await prisma.gameStat.findMany({
+            where,
+            orderBy: { id: "asc" },
+            select: {
+                id: true,
+                game: { select: { title: true } },
+                gameId: true,
+                user: { select: { normalizedName: true } },
+                userId: true,
+                timePlayed: true,
+                isEnded: true,
+                endedAt: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        if (gameStats.length === 0) throw new CustomError(notFoundMessage, 404);
+
+        const formattedGameStats = gameStats.map((gameStat) => ({
+            ...gameStat,
+            game: gameStat.game.title,
+            user: gameStat.user.normalizedName,
+        }));
+        return sendSuccessResponse(res, "Fetched gameStats successfully.", formattedGameStats);
+    } catch (error) {
+        return handleError(error, res);
+    }
 };
 
 export const getGameStat = async (req: Request, res: Response) => {
-    // try {
-    //     const validatedId = postGresIdSchema.safeParse(req.params);
-    //     if (!validatedId.success) throw validatedId.error;
-    //     const user: User | null = await prisma.user.findUnique({ where: { id: validatedId.data.id } });
-    //     if (!user) throw new CustomError(`User with id: ${validatedId.data.id} not found!`, 404);
-    //     return sendSuccessResponse(res, "Fetched user successfully.", user);
-    // } catch (error) {
-    //     return handleError(error, res);
-    // }
+    try {
+        const validatedId = postGresIdSchema.safeParse(req.params);
+        if (!validatedId.success) throw validatedId.error;
+
+        const gameStat = await prisma.gameStat.findUnique({
+            where: { id: validatedId.data.id },
+            select: {
+                id: true,
+                game: { select: { title: true } },
+                user: { select: { normalizedName: true } },
+                timePlayed: true,
+                isEnded: true,
+                endedAt: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+        if (!gameStat) throw new CustomError(`GameStat with id: ${validatedId.data.id} not found!`, 404);
+        const formattedGameStat = {
+            ...gameStat,
+            game: gameStat.game.title,
+            user: gameStat.user.normalizedName,
+        };
+        return sendSuccessResponse(res, "Fetched GameStat successfully.", formattedGameStat);
+    } catch (error) {
+        return handleError(error, res);
+    }
 };
 
 export const deleteGameStat = async (req: Request, res: Response) => {
-    // try {
-    //     const validatedId = postGresIdSchema.safeParse(req.params);
-    //     if (!validatedId.success) throw validatedId.error;
-    //     const user: User | null = await prisma.user.delete({ where: { id: validatedId.data.id } });
-    //     return sendSuccessResponse(res, "Deleted user successfully.", user);
-    // } catch (error) {
-    //     return handleError(error, res);
-    // }
+    try {
+        const validatedId = postGresIdSchema.safeParse(req.params);
+        if (!validatedId.success) throw validatedId.error;
+
+        const gameStat = await prisma.gameStat.delete({
+            where: { id: validatedId.data.id },
+            select: {
+                id: true,
+                game: { select: { title: true } },
+                user: { select: { normalizedName: true } },
+                timePlayed: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        if (!gameStat) throw new CustomError(`GameStat with id: ${validatedId.data.id} not found!`, 404);
+        const formattedGameStat = {
+            ...gameStat,
+            game: gameStat.game.title,
+            user: gameStat.user.normalizedName,
+        };
+        return sendSuccessResponse(res, "Deleted GameStat successfully.", formattedGameStat);
+    } catch (error) {
+        return handleError(error, res);
+    }
 };
 
 export const createGameStat = async (req: Request, res: Response) => {
-    // try {
-    //     const validatedUser = userCreationSchema.safeParse(req.body);
-    //     if (!validatedUser.success) throw validatedUser.error;
-    //     const { firstName, lastName, email, image } = validatedUser.data;
-    //     const newUser = {
-    //         firstName: firstName.trim(),
-    //         lastName: lastName.trim(),
-    //         email: email.trim().toLowerCase(),
-    //         image: image ? image.trim().toLowerCase() : null,
-    //         normalizedName: normalizedUserName(validatedUser.data.firstName, validatedUser.data.lastName),
-    //     };
-    //     const user: User = await prisma.user.create({ data: newUser });
-    //     return sendSuccessResponse(res, "Created user successfully.", user);
-    // } catch (error) {
-    //     return handleError(error, res);
-    // }
+    try {
+        const validatedGameStat = gameStatCreationSchema.safeParse(req.body);
+        if (!validatedGameStat.success) throw validatedGameStat.error;
+        const { gameId, userId } = validatedGameStat.data;
+
+        const gameStatCreation = await prisma.$transaction(async (prismaTx) => {
+            const user = await prismaTx.user.findUnique({ where: { id: userId } });
+            if (!user) throw new CustomError(`No user with id: ${userId}`, 404);
+            const game = await prismaTx.game.findUnique({ where: { id: gameId } });
+            if (!game) throw new CustomError(`No game with id: ${gameId}`, 404);
+
+            const now = new Date();
+            const activeSessions = await prismaTx.gameStat.findMany({ where: { userId, isEnded: false } });
+
+            for (const session of activeSessions) {
+                const seconds = Math.floor((now.getTime() - session.createdAt.getTime()) / 1000);
+                await prismaTx.gameStat.update({
+                    where: { id: session.id },
+                    data: { endedAt: now, isEnded: true, timePlayed: seconds },
+                });
+            }
+            const newStat = {
+                gameId,
+                userId,
+            };
+
+            const gameStat = await prismaTx.gameStat.create({ data: newStat });
+
+            return gameStat;
+        });
+
+        return sendSuccessResponse(res, "Created GameStat successfully.", gameStatCreation);
+    } catch (error) {
+        return handleError(error, res);
+    }
 };
 
-export const updateGameStat = async (req: Request, res: Response) => {
-    // try {
-    //     const validatedId = postGresIdSchema.safeParse(req.params);
-    //     if (!validatedId.success) throw validatedId.error;
-    //     const validatedUserUpdate = userUpdateSchema.safeParse(req.body);
-    //     if (!validatedUserUpdate.success) throw validatedUserUpdate.error;
-    //     const user: User | null = await prisma.user.findUnique({ where: { id: validatedId.data.id } });
-    //     if (!user) throw new CustomError(`User with id: ${validatedId.data.id} not found!`, 404);
-    //     const { firstName, lastName, email, image } = validatedUserUpdate.data;
-    //     const dataToUpdate: iUserUpdate = {};
-    //     if (firstName !== undefined) dataToUpdate.firstName = firstName.trim();
-    //     if (lastName !== undefined) dataToUpdate.lastName = lastName.trim();
-    //     if (email !== undefined) dataToUpdate.email = email.trim().toLowerCase();
-    //     if (image !== undefined) dataToUpdate.image = image;
-    //     if (validatedUserUpdate.data.firstName !== undefined || validatedUserUpdate.data.lastName !== undefined) {
-    //         const newFirst = dataToUpdate.firstName ?? user.firstName;
-    //         const newLast = dataToUpdate.lastName ?? user.lastName;
-    //         dataToUpdate.normalizedName = normalizedUserName(newFirst, newLast);
-    //     }
-    //     const updatedUser: User = await prisma.user.update({ where: { id: validatedId.data.id }, data: dataToUpdate });
-    //     return sendSuccessResponse(res, "Updated user successfully.", updatedUser);
-    // } catch (error) {
-    //     return handleError(error, res);
-    // }
+export const endGameSession = async (req: Request, res: Response) => {
+    try {
+        const validatedId = postGresIdSchema.safeParse(req.params);
+        if (!validatedId.success) throw validatedId.error;
+        const id = validatedId.data.id;
+
+        const now = new Date();
+
+        const endedSession = await prisma.$transaction(async (prismaTx) => {
+            const session = await prismaTx.gameStat.findUnique({ where: { id } });
+
+            if (!session) throw new CustomError(`No session with id: ${id}`, 404);
+            if (session.isEnded) throw new CustomError(`Session is already ended`, 400);
+
+            const seconds = Math.floor((now.getTime() - session.createdAt.getTime()) / 1000);
+
+            const updated = await prismaTx.gameStat.update({
+                where: { id },
+                data: { isEnded: true, endedAt: now, timePlayed: seconds },
+            });
+
+            return updated;
+        });
+
+        return sendSuccessResponse(res, "Ended session successfully.", endedSession);
+    } catch (error) {
+        return handleError(error, res);
+    }
 };
