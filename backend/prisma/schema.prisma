@@ -23,24 +23,34 @@ model User {
   stats          GameStat[]
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+
+  @@index([normalizedName])
 }
 
 model Game {
   id              Int        @id @default(autoincrement())
   title           String     @db.VarChar(254)
-  normalizedTitle String     @db.VarChar(254)
+  normalizedTitle String     @unique @db.VarChar(254)
   stats           GameStat[]
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+
+  @@index([normalizedTitle])
 }
 
 model GameStat {
-  id         Int      @id @default(autoincrement())
-  timePlayed Int
-  Game       Game     @relation(fields: [gameId], references: [id])
+  id         Int       @id @default(autoincrement())
+  timePlayed Int?
+  game       Game      @relation(fields: [gameId], references: [id])
   gameId     Int
-  User       User     @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
   userId     Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  isEnded    Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  endedAt    DateTime?
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([gameId])
+  @@index([isEnded])
 }

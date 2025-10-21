@@ -6,13 +6,13 @@ const seed = async () => {
             firstName: "Surely",
             lastName: "Beans",
             email: "surely@example.com",
-            normalizedName: "surely bean",
+            normalizedName: "surely beans",
         },
         {
             firstName: "Barely",
             lastName: "Beans",
             email: "barely@example.com",
-            normalizedName: "barely bean",
+            normalizedName: "barely beans",
         },
         {
             firstName: "Only",
@@ -22,17 +22,40 @@ const seed = async () => {
         },
     ];
     const games = [
-        { title: "Grand theft bean", normalizedTitle: "grand thef tbean" },
+        { title: "Grand theft bean", normalizedTitle: "grand theft bean" },
         { title: "Beany Kong", normalizedTitle: "beany kong" },
         { title: "Super Bean brothers", normalizedTitle: "super bean brothers" },
     ];
 
     await prisma.user.createMany({
         data: users,
+        skipDuplicates: true,
     });
     await prisma.game.createMany({
         data: games,
+        skipDuplicates: true,
     });
+
+    const [allUsers, allGames] = await Promise.all([
+        prisma.user.findMany({ select: { id: true } }),
+        prisma.game.findMany({ select: { id: true } }),
+    ]);
+    const stats: { userId: number; gameId: number }[] = [];
+    for (const user of allUsers) {
+        const playedGames = allGames.slice(0, 2);
+        for (const g of playedGames) {
+            stats.push({
+                userId: user.id,
+                gameId: g.id,
+            });
+        }
+    }
+    if (stats.length) {
+        const result = await prisma.gameStat.createMany({ data: stats });
+        console.log("Inserted gameStat count:", result.count);
+    } else {
+        console.log("No stats to insert");
+    }
 };
 seed()
     .catch((e) => {

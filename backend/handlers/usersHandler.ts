@@ -25,10 +25,26 @@ export const getUsers = async (req: Request, res: Response) => {
             notFoundMessage = `No user match your query: '${validatedUserFilter.data.normalizedName}'.`;
         }
 
-        const users: User[] = await prisma.user.findMany({ where, orderBy: { id: "asc" } });
+        const users = await prisma.user.findMany({
+            where,
+            orderBy: { id: "asc" },
+            include: { stats: { include: { game: { select: { id: true, title: true } } } } },
+        });
+
         if (users.length === 0) throw new CustomError(notFoundMessage, 404);
 
-        return sendSuccessResponse(res, "Fetched users successfully.", users);
+        const formattedUsers = users.map((user) => ({
+            ...user,
+            stats: user.stats.map((s) => ({
+                id: s.id,
+                timePlayed: s.timePlayed,
+                gameId: s.gameId,
+                gameTitle: s.game.title,
+                createdAt: s.createdAt,
+            })),
+        }));
+
+        return sendSuccessResponse(res, "Fetched users successfully.", formattedUsers);
     } catch (error) {
         return handleError(error, res);
     }
@@ -39,10 +55,24 @@ export const getUser = async (req: Request, res: Response) => {
         const validatedId = postGresIdSchema.safeParse(req.params);
         if (!validatedId.success) throw validatedId.error;
 
-        const user: User | null = await prisma.user.findUnique({ where: { id: validatedId.data.id } });
+        const user = await prisma.user.findUnique({
+            where: { id: validatedId.data.id },
+            include: { stats: { include: { game: { select: { id: true, title: true } } } } },
+        });
         if (!user) throw new CustomError(`User with id: ${validatedId.data.id} not found!`, 404);
 
-        return sendSuccessResponse(res, "Fetched user successfully.", user);
+        const formattedUser = {
+            ...user,
+            stats: user.stats.map((s) => ({
+                id: s.id,
+                timePlayed: s.timePlayed,
+                gameId: s.gameId,
+                gameTitle: s.game.title,
+                createdAt: s.createdAt,
+            })),
+        };
+
+        return sendSuccessResponse(res, "Fetched user successfully.", formattedUser);
     } catch (error) {
         return handleError(error, res);
     }
