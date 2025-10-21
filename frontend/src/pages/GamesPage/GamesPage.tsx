@@ -1,15 +1,13 @@
+import { useGetGames } from "../../api/queries/games/useGames";
 import GameCard from "../../components/GameCard/GameCard";
-import useGamesStore from "../../stores/gamesStore";
 
 import "./gamesPage.css";
 const GamesPage: React.FC = () => {
-    const { games } = useGamesStore();
+    const { data } = useGetGames();
     return (
         <main className="shared-page-style">
             <div className="games-page wrapper--max-width">
-                {games.map((game) => (
-                    <GameCard key={game.id} gameId={game.id} title={game.title} src={game.src} />
-                ))}
+                {data && data.map((game) => <GameCard key={game.id} game={game} />)}
                 <h2 className="games-page__speach-bubble">CHOOSE A GAME TO PLAY</h2>
             </div>
         </main>

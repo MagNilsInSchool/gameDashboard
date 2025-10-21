@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { iGame } from "../interfaces/games";
+import type { iGame } from "../interfaces/game";
 
 interface GamesStore {
     games: iGame[];
@@ -9,14 +9,14 @@ interface GamesStore {
 }
 const useGamesStore = create<GamesStore>((set) => ({
     games: [
-        { id: 1, title: "Beantown", src: "/assets/icons/game-logo.svg" },
-        { id: 2, title: "Revenge of beans!", src: "/assets/icons/game-logo.svg" },
-        { id: 3, title: "Can it be beans?", src: "/assets/icons/game-logo.svg" },
-        { id: 4, title: "Are you kidney beans?", src: "/assets/icons/game-logo.svg" },
-        { id: 5, title: "Bunda bean", src: "/assets/icons/game-logo.svg" },
-        { id: 6, title: "Grand theft bean", src: "/assets/icons/game-logo.svg" },
-        { id: 7, title: "A can of beans", src: "/assets/icons/game-logo.svg" },
-        { id: 8, title: "Beantown 2", src: "/assets/icons/game-logo.svg" },
+        { id: 1, title: "Beantown", normalizedTitle: "beantown" },
+        { id: 2, title: "Revenge of beans!", normalizedTitle: "revenge of beans!" },
+        { id: 3, title: "Can it be beans?", normalizedTitle: "can it be beans?" },
+        { id: 4, title: "Are you kidney beans?", normalizedTitle: "are you kidney beans?" },
+        { id: 5, title: "Bunda bean", normalizedTitle: "bunda bean" },
+        { id: 6, title: "Grand theft bean", normalizedTitle: "grand theft bean" },
+        { id: 7, title: "A can of beans", normalizedTitle: "a can of beans" },
+        { id: 8, title: "Beantown 2", normalizedTitle: "bantown 2" },
     ],
     setGames: (value) =>
         set((state) => ({
