@@ -4,14 +4,14 @@ import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import useUserStore from "../../stores/userStore";
 import "./profilePage.css";
 const ProfilePage: React.FC = () => {
-    const { user } = useUserStore();
+    const { activeUser } = useUserStore();
     const navigate = useNavigate();
 
     return (
         <div className="shared-page-style">
             <main className="profile-page wrapper--max-width">
                 <section className="profile-page__row-wrapper">
-                    <ProfileCard user={user} />
+                    {activeUser && <ProfileCard user={activeUser} />}
                     <ul className="profile-page__minutes-per-game-list">
                         <li className="profile-page__minutes-per-game-list-item">
                             <h2 className="profile-page__minutes-per-game-title">Game 1</h2>

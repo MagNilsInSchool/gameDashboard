@@ -1,13 +1,27 @@
+import { useEffect } from "react";
 import { useGetGames } from "../../api/queries/games/useGames";
 import GameCard from "../../components/GameCard/GameCard";
 
 import "./gamesPage.css";
+import { handleApiError } from "../../api/errorHandler/handleApiErrors";
+import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader/Loader";
 const GamesPage: React.FC = () => {
-    const { data } = useGetGames();
+    const navigate = useNavigate();
+    const { data, isError, error, isLoading } = useGetGames();
+
+    useEffect(() => {
+        if (isError) handleApiError(error, navigate);
+    }, [isError, error, navigate]);
+
+    if (isLoading) return <Loader />;
+
     return (
         <main className="shared-page-style">
             <div className="games-page wrapper--max-width">
-                {data && data.map((game) => <GameCard key={game.id} game={game} />)}
+                {data?.map((game) => (
+                    <GameCard key={game.id} game={game} />
+                ))}
                 <h2 className="games-page__speach-bubble">CHOOSE A GAME TO PLAY</h2>
             </div>
         </main>

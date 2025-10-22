@@ -9,8 +9,8 @@ import { useGetGame } from "../../api/queries/games/useGames";
 const PlayingPage = () => {
     const { id } = useParams<{ id: string }>();
     const gameId = Number(id);
+    const { activeUser } = useUserStore();
     const { data: currentGame, isLoading } = useGetGame(gameId);
-    const { user } = useUserStore();
 
     if (isLoading) return <p>Loading...</p>;
     return (
@@ -21,7 +21,7 @@ const PlayingPage = () => {
                     <GameTimer />
                 </div>
 
-                <ProfileCard user={user} />
+                {activeUser && <ProfileCard user={activeUser} />}
             </div>
         </main>
     );

@@ -14,6 +14,7 @@ export const useGetGame = (id: number) => {
     return useQuery({
         queryKey: ["games", id],
         queryFn: () => getGame(id),
+        enabled: !!id,
         staleTime: 0.5 * 60 * 1000,
         placeholderData: (previousData) => previousData,
     });

@@ -4,7 +4,7 @@ import useUserStore from "../../stores/userStore";
 
 const SideNavigation = () => {
     const location = useLocation();
-    const { user } = useUserStore();
+    const { activeUser } = useUserStore();
 
     const routes = [
         {
@@ -22,7 +22,7 @@ const SideNavigation = () => {
             alt: "A d-pad from a gaming controller.",
         },
         {
-            route: `/users/${user.id}`,
+            route: activeUser ? `/users/${activeUser.id}` : "",
             text: "Profile",
             activeSrc: "/assets/icons/user-filled.svg",
             inactiveSrc: "/assets/icons/user.svg",
