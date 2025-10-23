@@ -36,7 +36,7 @@ const weatherIcons: Record<number, { description: string; image: string }> = {
 
 export const getWeatherIcon = (data?: iWeather | null) => {
     const fallback = {
-        description: "Man shrugging. Who knows what weather we are getting",
+        description: "Man shrugging. Who knows what weather we are getting.",
         image: "/assets/icons/fallback.png",
     };
     if (!data) return fallback;
@@ -46,21 +46,27 @@ export const getWeatherIcon = (data?: iWeather | null) => {
 
 const WeatherDisplay: React.FC = () => {
     const { data, isLoading, isError, refetch } = useGetWeather();
-    const temperatureRounded = data?.temperature_2m ? Math.round(data.temperature_2m) : "";
+    const temperatureRounded = data?.temperature_2m ? `${Math.round(data.temperature_2m)} \u00B0C` : "";
+    const todaysDate = formatDateWeekdayDayMonthYear(new Date());
 
-    if (isLoading) return <p>Loading...</p>;
     if (isError) return <p onClick={() => refetch()}>Failed to fetch weather. Click to retry</p>;
 
     return (
         <article className="weather-display">
-            <h2 className="weather-display__date">{formatDateWeekdayDayMonthYear(new Date())}</h2>
+            <h2 className="weather-display__date">{todaysDate}</h2>
             <div className="weather-display__weather">
-                <img
-                    className="weather-display__weather-icon"
-                    src={getWeatherIcon(data).image}
-                    alt={getWeatherIcon(data).description}
-                />
-                <span className="weather-display__temperature">{`${temperatureRounded} \u00B0C`}</span>
+                {isLoading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        <img
+                            className="weather-display__weather-icon"
+                            src={getWeatherIcon(data).image}
+                            alt={getWeatherIcon(data).description}
+                        />
+                        <span className="weather-display__temperature">{temperatureRounded}</span>
+                    </>
+                )}
             </div>
         </article>
     );

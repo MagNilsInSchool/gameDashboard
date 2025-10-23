@@ -17,6 +17,7 @@
 }
 
 .weather-display__weather-icon {
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.5));
     margin-left: -10px;
     width: 2.3rem;
     height: auto;
