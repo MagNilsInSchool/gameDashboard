@@ -6,13 +6,13 @@ export type iGameStatsResponse = ApiResponse<iGameStat[]>;
 export type iGameStatResponse = ApiResponse<iGameStat>;
 
 export interface iGameStat {
-    id: Number;
-    timePlayed?: Number;
+    id: number;
+    timePlayed?: number;
     game: iGame;
-    gameId: Number;
+    gameId: number;
     user: iUser;
-    userId: Number;
-    isEnded: Boolean;
+    userId: number;
+    isEnded: boolean;
     createdAt: Date;
     endedAt?: Date;
     updatedAt: Date;

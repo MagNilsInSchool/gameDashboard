@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form";
+
 import { userCreationSchema, type iUserRegistration } from "../../schemas/userSchemas";
 import CtaButton from "../CtaButton/CtaButton";
 import ImgSelector from "../ImgSelector/ImgSelector";
@@ -40,7 +41,7 @@ const UserRegistrationForm: React.FC = () => {
 
             let firstInput: HTMLInputElement | undefined;
             for (const input of inputs) {
-                if (!!errorMap[input.name]) {
+                if (!errorMap[input.name]) {
                     firstInput = input;
                     break;
                 }

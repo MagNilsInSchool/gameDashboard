@@ -34,7 +34,7 @@ const weatherIcons: Record<number, { description: string; image: string }> = {
     99: { description: "Thunderstorm With Hail", image: "http://openweathermap.org/img/wn/11d@2x.png" },
 };
 
-export const getWeatherIcon = (data?: iWeather | null) => {
+const getWeatherIcon = (data?: iWeather | null) => {
     const fallback = {
         description: "Man shrugging. Who knows what weather we are getting.",
         image: "/assets/icons/fallback.png",
