@@ -9,6 +9,8 @@
     --accent1: #DC4031;
     --accent2: #F4D57A;
 
+    --color-error: #ff0000;
+
     --3d-shadow: inset 2px 2px 0 0 rgba(255, 255, 255, 0.2), inset -3px -3px 0 0 rgba(0, 0, 0, 0.15);
     --3d-shadow-big: inset 3px 3px 0 0 rgba(255, 255, 255, 0.2), inset -4px -4px 0 0 rgba(0, 0, 0, 0.15);
     --3d-shadow-reverse: inset -3px -3px 0 0 rgba(255, 255, 255, 0.2), inset 2px 2px 0 0 rgba(0, 0, 0, 0.35);

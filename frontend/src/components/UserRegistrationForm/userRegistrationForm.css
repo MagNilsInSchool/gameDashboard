@@ -1,7 +1,6 @@
 .user-registration-form {
     display: grid;
     place-items: start center;
-    gap: var(--spacing-xl);
     background-color: var(--main-200);
     padding-top: 5rem;
     width: 100%;
@@ -13,7 +12,7 @@
     max-width: 37rem;
     width: 100%;
     display: grid;
-    gap: var(--spacing-xl);
+    gap: var(--spacing-xs);
 }
 
 .user-registration-form__submit-button {
@@ -23,6 +22,7 @@
 
 
 .user-registration-form__row-wrapper {
+    margin-top: var(--spacing-s);
     display: flex;
     justify-content: space-between;
 }

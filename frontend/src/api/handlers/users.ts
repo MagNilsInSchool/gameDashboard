@@ -2,6 +2,7 @@ import axios from "axios";
 import type { iUser, iUserResponse, iUsersResponse } from "../../interfaces/user";
 import type { ApiSuccess } from "../../interfaces/response";
 import { throwApiError } from "../errorHandler/handleApiErrors";
+import type { iUserRegistration } from "../../schemas/userSchemas";
 
 const BASE_URL = "http://localhost:1338/users";
 
@@ -34,4 +35,18 @@ const getUser = async (id: number): Promise<iUser> => {
     }
     return (result as ApiSuccess<iUser>).data;
 };
-export { getUsers, getUser };
+
+const registerUser = async (userData: iUserRegistration): Promise<iUser> => {
+    const response = await axios.post<iUserResponse>(BASE_URL, userData, {
+        validateStatus: () => true,
+    });
+
+    const result = response.data;
+    if (!result.success) {
+        console.error("registerUser API error:", result.message);
+        throwApiError(result.message, response.status);
+    }
+    return (result as ApiSuccess<iUser>).data;
+};
+
+export { getUsers, getUser, registerUser };
