@@ -3,24 +3,25 @@ import "./playingPage.css";
 import GameCard from "../../components/GameCard/GameCard";
 import GameTimer from "../../components/GameTimer/GameTimer";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
-import useGamesStore from "../../stores/gamesStore";
 import useUserStore from "../../stores/userStore";
+import { useGetGame } from "../../api/queries/games/useGames";
 
 const PlayingPage = () => {
-    const { id } = useParams();
-    const { games } = useGamesStore();
-    const { user } = useUserStore();
-    const currentGame = games[Number(id) - 1];
+    const { id } = useParams<{ id: string }>();
+    const gameId = Number(id);
+    const { activeUser } = useUserStore();
+    const { data: currentGame, isLoading } = useGetGame(gameId);
 
+    if (isLoading) return <p>Loading...</p>;
     return (
         <main className="shared-page-style">
             <div className="playing-page wrapper--max-width">
                 <div className="playing-page__game-display">
-                    <GameCard gameId={Number(id)} src={currentGame.src} title={currentGame.title} />
+                    {currentGame && <GameCard game={currentGame} />}
                     <GameTimer />
                 </div>
 
-                <ProfileCard user={user} />
+                {activeUser && <ProfileCard user={activeUser} />}
             </div>
         </main>
     );

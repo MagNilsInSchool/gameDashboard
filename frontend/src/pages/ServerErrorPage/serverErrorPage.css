@@ -1,0 +1,43 @@
+.games-page {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.games-page__speach-bubble {
+    padding: 1.5rem;
+    border: var(--border);
+    width: fit-content;
+    place-self: end;
+    grid-column: 1/-1;
+    border-radius: 8px;
+    position: relative;
+    z-index: 0;
+}
+
+.games-page__speach-bubble::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: -18px;
+    width: 24px;
+    height: 20px;
+    background: var(--black);
+    clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    z-index: -2;
+    rotate: -10deg;
+}
+
+.games-page__speach-bubble::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: -14px;
+    width: 22px;
+    height: 17px;
+    background: var(--main-100);
+    clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    z-index: -1;
+    rotate: -10deg;
+}
