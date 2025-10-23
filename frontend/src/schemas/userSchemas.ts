@@ -1,20 +1,17 @@
 import { z } from "zod";
 
-const nameString = z.preprocess(
-    (val) => {
-        if (typeof val === "string") return val.trim();
-        return val;
-    },
-    z
-        .string()
-        .regex(/^[\p{L}]+$/u, { message: "Name may only contain letters." })
-        .min(2, { message: "Name needs to be at least 2 letters." })
-        .max(20, { message: "Name can be at most 20 letters." })
-);
 export const userCreationSchema = z
     .object({
-        firstName: nameString,
-        lastName: nameString,
+        firstName: z
+            .string()
+            .regex(/^[\p{L}]+$/u, { message: "Name may only contain letters." })
+            .min(2, { message: "Name needs to be at least 2 letters." })
+            .max(20, { message: "Name can be at most 20 letters." }),
+        lastName: z
+            .string()
+            .regex(/^[\p{L}]+$/u, { message: "Name may only contain letters." })
+            .min(2, { message: "Name needs to be at least 2 letters." })
+            .max(20, { message: "Name can be at most 20 letters." }),
         email: z
             .email()
             .min(4, { message: "Email needs to be at least 4 letters." })
