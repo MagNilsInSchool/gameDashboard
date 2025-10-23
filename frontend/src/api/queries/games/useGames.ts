@@ -5,7 +5,7 @@ export const useGetGames = (normalizedTitle?: string) => {
     return useQuery({
         queryKey: ["games", normalizedTitle ?? null],
         queryFn: () => getGames(normalizedTitle),
-        staleTime: 1 * 60 * 1000,
+        staleTime: 60_000,
         placeholderData: (previousData) => previousData,
     });
 };
@@ -15,7 +15,7 @@ export const useGetGame = (id: number) => {
         queryKey: ["games", id],
         queryFn: () => getGame(id),
         enabled: !!id,
-        staleTime: 0.5 * 60 * 1000,
+        staleTime: 30_000,
         placeholderData: (previousData) => previousData,
     });
 };

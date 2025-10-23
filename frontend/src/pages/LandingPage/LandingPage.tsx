@@ -1,6 +1,5 @@
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import "./landingPage.css";
-
 import type { iUser } from "../../interfaces/user";
 import { useGetUsers } from "../../api/queries/users/useUsers";
 import Loader from "../../components/Loader/Loader";
