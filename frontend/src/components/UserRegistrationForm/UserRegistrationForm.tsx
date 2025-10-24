@@ -1,32 +1,152 @@
+import { useForm } from "@tanstack/react-form";
+import axios from "axios";
+import { userCreationSchema, type iUserRegistration } from "../../schemas/userSchemas";
 import CtaButton from "../CtaButton/CtaButton";
 import ImgSelector from "../ImgSelector/ImgSelector";
 import InputField from "../InputField/InputField";
 import "./userRegistrationForm.css";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRegisterUser } from "../../api/mutations/users/useUsers";
+import { useNavigate } from "react-router-dom";
+import { capitalizeFirstLetter } from "../../utils/stringFormat";
+import useToastStore from "../../stores/toastStore";
 
 const UserRegistrationForm: React.FC = () => {
+    const queryClient = useQueryClient();
+    const registerUserMutation = useRegisterUser();
+    const navigate = useNavigate();
+    const { setToastInfo } = useToastStore();
+
+    const form = useForm({
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            email: "",
+        } as iUserRegistration,
+        validators: {
+            onChange: userCreationSchema,
+        },
+        onSubmit: async ({ formApi, value }) => {
+            try {
+                value.firstName = capitalizeFirstLetter(value.firstName);
+                value.lastName = capitalizeFirstLetter(value.lastName);
+                await registerUserMutation.mutateAsync(value);
+
+                await queryClient.invalidateQueries({ queryKey: ["users"] });
+                formApi.reset();
+                setToastInfo({
+                    message: "User registered successfully.",
+                    type: "success",
+                    duration: 5,
+                });
+
+                navigate("/");
+            } catch (error) {
+                const status = axios.isAxiosError(error) ? error.response?.status : (error as any)?.status;
+
+                setToastInfo({
+                    message:
+                        status === 409
+                            ? "Email already in use. Please use a different email."
+                            : "An error occurred while registering the user.",
+                    type: "error",
+                    duration: 7,
+                });
+            }
+        },
+
+        onSubmitInvalid({ formApi }) {
+            const errorMap = formApi.state.errorMap.onChange!;
+            const inputs = Array.from(document.querySelectorAll("#registerForm input")) as HTMLInputElement[];
+
+            let firstInput: HTMLInputElement | undefined;
+            for (const input of inputs) {
+                if (!errorMap[input.name]) {
+                    firstInput = input;
+                    break;
+                }
+            }
+            firstInput?.focus();
+        },
+    });
+
     return (
         <form
+            id="registerForm"
             className="user-registration-form"
             onSubmit={(e) => {
                 e.preventDefault();
-                console.log("Submitted form.");
+                e.stopPropagation();
+                form.handleSubmit();
             }}>
             <div className="user-registration-form__inner-wrapper">
-                <InputField
-                    labelText="Email address *"
+                <form.Field
                     name="email"
-                    type="email"
-                    placeholder="example@example.com"
-                    autoComplete="email"
+                    children={({ name, state, handleChange }) => (
+                        <InputField
+                            labelText="Email address *"
+                            name={name}
+                            value={state.value}
+                            onChange={(e) => handleChange(e.target.value)}
+                            type="text"
+                            placeholder="example@example.com"
+                            autoComplete="email"
+                            errorMessage={
+                                state.meta.errors.length > 0 && state.meta.isTouched
+                                    ? state.meta.errors[0]?.message
+                                    : ""
+                            }
+                        />
+                    )}
                 />
-                <InputField labelText="First name *" name="firstName" placeholder="Name" autoComplete="given-name" />
-                <InputField labelText="Last name *" name="LastName" placeholder="Nameson" autoComplete="family-name" />
+
+                <form.Field
+                    name="firstName"
+                    children={({ name, state, handleChange }) => (
+                        <InputField
+                            labelText="First name *"
+                            placeholder="Name"
+                            name={name}
+                            value={state.value}
+                            onChange={(e) => handleChange(e.target.value)}
+                            autoComplete="given-name"
+                            errorMessage={
+                                state.meta.errors.length > 0 && state.meta.isTouched
+                                    ? state.meta.errors[0]?.message
+                                    : ""
+                            }
+                        />
+                    )}
+                />
+                <form.Field
+                    name="lastName"
+                    children={({ name, state, handleChange }) => (
+                        <InputField
+                            labelText="Last name *"
+                            placeholder="Nameson"
+                            name={name}
+                            value={state.value}
+                            onChange={(e) => handleChange(e.target.value)}
+                            autoComplete="family-name"
+                            errorMessage={
+                                state.meta.errors.length > 0 && state.meta.isTouched
+                                    ? state.meta.errors[0]?.message
+                                    : ""
+                            }
+                        />
+                    )}
+                />
                 <div className="user-registration-form__row-wrapper">
                     <ImgSelector />
-                    <CtaButton
-                        text="REGISTER"
-                        onClick={() => console.log("Registerbutton pressed")}
-                        className="user-registration-form__submit-button"
+                    <form.Subscribe
+                        selector={(state) => [state.isSubmitting]}
+                        children={([isSubmitting]) => (
+                            <CtaButton
+                                text={isSubmitting ? "SUBMITTING..." : "REGISTER"}
+                                className="user-registration-form__submit-button"
+                                disabled={isSubmitting}
+                            />
+                        )}
                     />
                 </div>
             </div>

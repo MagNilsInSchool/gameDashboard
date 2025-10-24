@@ -14,16 +14,14 @@ const PlayingPage = () => {
 
     if (isLoading) return <p>Loading...</p>;
     return (
-        <main className="shared-page-style">
-            <div className="playing-page wrapper--max-width">
-                <div className="playing-page__game-display">
-                    {currentGame && <GameCard game={currentGame} />}
-                    <GameTimer />
-                </div>
-
-                {activeUser && <ProfileCard user={activeUser} />}
+        <div className="playing-page wrapper--max-width">
+            <div className="playing-page__game-display">
+                {currentGame && <GameCard game={currentGame} />}
+                <GameTimer />
             </div>
-        </main>
+
+            {activeUser && <ProfileCard user={activeUser} />}
+        </div>
     );
 };
 

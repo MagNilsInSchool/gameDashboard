@@ -18,13 +18,11 @@ const LandingPage = () => {
     if (isLoading) return <Loader />;
 
     return (
-        <main className="shared-page-style">
-            <div className="landing-page wrapper--max-width">
-                {data?.map((user: iUser) => (
-                    <ProfileCard user={user} key={user.id} />
-                ))}
-            </div>
-        </main>
+        <div className="landing-page wrapper--max-width">
+            {data?.map((user: iUser) => (
+                <ProfileCard user={user} key={user.id} />
+            ))}
+        </div>
     );
 };
 
