@@ -17,14 +17,12 @@ const GamesPage: React.FC = () => {
     if (isLoading) return <Loader />;
 
     return (
-        <main className="shared-page-style">
-            <div className="games-page wrapper--max-width">
-                {data?.map((game) => (
-                    <GameCard key={game.id} game={game} />
-                ))}
-                <h2 className="games-page__speach-bubble">CHOOSE A GAME TO PLAY</h2>
-            </div>
-        </main>
+        <div className="games-page wrapper--max-width">
+            {data?.map((game) => (
+                <GameCard key={game.id} game={game} />
+            ))}
+            <h2 className="games-page__speach-bubble">CHOOSE A GAME TO PLAY</h2>
+        </div>
     );
 };
 

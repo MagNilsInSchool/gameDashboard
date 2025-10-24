@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-
+import axios from "axios";
 import { userCreationSchema, type iUserRegistration } from "../../schemas/userSchemas";
 import CtaButton from "../CtaButton/CtaButton";
 import ImgSelector from "../ImgSelector/ImgSelector";
@@ -9,11 +9,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRegisterUser } from "../../api/mutations/users/useUsers";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../utils/stringFormat";
+import useToastStore from "../../stores/toastStore";
 
 const UserRegistrationForm: React.FC = () => {
     const queryClient = useQueryClient();
     const registerUserMutation = useRegisterUser();
     const navigate = useNavigate();
+    const { setToastInfo } = useToastStore();
 
     const form = useForm({
         defaultValues: {
@@ -25,14 +27,32 @@ const UserRegistrationForm: React.FC = () => {
             onChange: userCreationSchema,
         },
         onSubmit: async ({ formApi, value }) => {
-            value.firstName = capitalizeFirstLetter(value.firstName);
-            value.lastName = capitalizeFirstLetter(value.lastName);
-            await registerUserMutation.mutateAsync(value);
+            try {
+                value.firstName = capitalizeFirstLetter(value.firstName);
+                value.lastName = capitalizeFirstLetter(value.lastName);
+                await registerUserMutation.mutateAsync(value);
 
-            await queryClient.invalidateQueries({ queryKey: ["users"] });
-            formApi.reset();
+                await queryClient.invalidateQueries({ queryKey: ["users"] });
+                formApi.reset();
+                setToastInfo({
+                    message: "User registered successfully.",
+                    type: "success",
+                    duration: 5,
+                });
 
-            navigate("/");
+                navigate("/");
+            } catch (error) {
+                const status = axios.isAxiosError(error) ? error.response?.status : (error as any)?.status;
+
+                setToastInfo({
+                    message:
+                        status === 409
+                            ? "Email already in use. Please use a different email."
+                            : "An error occurred while registering the user.",
+                    type: "error",
+                    duration: 7,
+                });
+            }
         },
 
         onSubmitInvalid({ formApi }) {
