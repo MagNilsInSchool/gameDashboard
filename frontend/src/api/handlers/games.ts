@@ -29,6 +29,7 @@ const getGame = async (id: number): Promise<iGame> => {
         console.error("getGame API error:", result.message);
         throwApiError(result.message, response.status);
     }
+
     return (result as ApiSuccess<iGame>).data;
 };
 export { getGames, getGame };

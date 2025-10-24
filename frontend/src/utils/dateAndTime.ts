@@ -5,3 +5,10 @@ export const formatDateWeekdayDayMonthYear = (d: Date) => {
     const year = d.getFullYear();
     return `${weekday}, ${day} ${month} ${year}`; // "Wednesday,15 Oct 2025"
 };
+
+export const secondsToHMS = (totalSeconds: number) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return { hours, minutes, seconds };
+};

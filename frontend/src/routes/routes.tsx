@@ -12,7 +12,7 @@ const RoutesComponent: React.FC = () => {
         <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/games" element={<GamesPage />} />
-            <Route path="/games/play/:id" element={<PlayingPage />} />
+            <Route path="/games/play/:gId/:uId" element={<PlayingPage />} />
             <Route path="/users/register" element={<RegisterUserPage />} />
             <Route path="/users/:id" element={<ProfilePage />} />
             <Route path="/offline" element={<OfflinePage />} />
