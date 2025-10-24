@@ -1,7 +1,7 @@
 import { useGetWeather } from "../../api/queries/weather/useWeather";
 import "./weatherDisplay.css";
 import type { iWeather } from "../../interfaces/weather";
-import { formatDateWeekdayDayMonthYear } from "../../utils/date";
+import { formatDateWeekdayDayMonthYear } from "../../utils/dateAndTime";
 
 const weatherIcons: Record<number, { description: string; image: string }> = {
     0: { description: "Sunny", image: "http://openweathermap.org/img/wn/01d@2x.png" },

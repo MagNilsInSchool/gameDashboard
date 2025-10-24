@@ -5,7 +5,7 @@ interface Props {
     type: "success" | "error" | "info";
     duration?: number;
 }
-const Toast = ({ message, type, duration }: Props) => {
+const Toast = ({ message, type, duration = 5 }: Props) => {
     const { setToastInfo } = useToastStore();
     const iconSrc =
         type === "success"
@@ -17,7 +17,7 @@ const Toast = ({ message, type, duration }: Props) => {
         <article className="toast" onClick={() => setToastInfo(null)}>
             <img src={iconSrc} alt={`Showing the sign for ${type}`} className="toast__icon" />
             <p className="toast__message">{message}</p>
-            <div className="toast__timer" style={{ animationDuration: duration ? `${duration}s` : "5s" }}></div>
+            <div className="toast__timer" style={{ animationDuration: `${duration}s` }}></div>
         </article>
     );
 };

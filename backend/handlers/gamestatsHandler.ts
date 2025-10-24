@@ -149,9 +149,18 @@ export const createGameStat = async (req: Request, res: Response) => {
                 userId,
             };
 
-            const gameStat = await prismaTx.gameStat.create({ data: newStat });
+            const gameStat = await prismaTx.gameStat.create({
+                data: newStat,
+                include: { game: { select: { title: true } }, user: { select: { firstName: true, lastName: true } } },
+            });
 
-            return gameStat;
+            const formattedSession = {
+                ...gameStat,
+                game: gameStat.game.title,
+                user: `${gameStat.user.firstName} ${gameStat.user.lastName}`,
+            };
+
+            return formattedSession;
         });
 
         return sendSuccessResponse(res, "Created GameStat successfully.", gameStatCreation);
@@ -176,12 +185,18 @@ export const endGameSession = async (req: Request, res: Response) => {
 
             const seconds = Math.floor((now.getTime() - session.createdAt.getTime()) / 1000);
 
-            const updated = await prismaTx.gameStat.update({
+            const sessionToEnd = await prismaTx.gameStat.update({
                 where: { id },
                 data: { isEnded: true, endedAt: now, timePlayed: seconds },
+                include: { game: { select: { title: true } }, user: { select: { firstName: true, lastName: true } } },
             });
+            const formattedSession = {
+                ...sessionToEnd,
+                game: sessionToEnd.game.title,
+                user: `${sessionToEnd.user.firstName} ${sessionToEnd.user.lastName}`,
+            };
 
-            return updated;
+            return formattedSession;
         });
 
         return sendSuccessResponse(res, "Ended session successfully.", endedSession);
