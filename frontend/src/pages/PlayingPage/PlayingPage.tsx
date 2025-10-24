@@ -16,13 +16,16 @@ const PlayingPage = () => {
     const navigate = useNavigate();
     const [isGameRunning, setIsGameRunning] = useState(false);
     const [seconds, setSeconds] = useState(0);
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
+
     const gameTimerRef = useRef<number | null>(null);
     const sessionIdRef = useRef<number | null>(null);
+
     const { gId, uId } = useParams<{ gId: string; uId: string }>();
     const gameId = Number(gId);
     const userId = Number(uId);
-    const setToastInfo = useToastStore((s) => s.setToastInfo);
     const sessionCreation: iSessionCreation = { gameId, userId };
+
     const { data: currentGame, isLoading: gameLoading, error: gameError } = useGetGame(gameId);
     const { data: currentUser, isLoading: userLoading, error: userError } = useGetUser(userId);
 

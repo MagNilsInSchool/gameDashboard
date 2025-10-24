@@ -15,7 +15,7 @@ const UserRegistrationForm: React.FC = () => {
     const queryClient = useQueryClient();
     const registerUserMutation = useRegisterUser();
     const navigate = useNavigate();
-    const { setToastInfo } = useToastStore();
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
 
     const form = useForm({
         defaultValues: {
