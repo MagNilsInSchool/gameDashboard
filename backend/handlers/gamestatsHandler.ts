@@ -40,7 +40,7 @@ export const getGamesStats = async (req: Request, res: Response) => {
                 id: true,
                 game: { select: { title: true } },
                 gameId: true,
-                user: { select: { normalizedName: true } },
+                user: { select: { firstName: true, lastName: true } },
                 userId: true,
                 timePlayed: true,
                 isEnded: true,
@@ -55,7 +55,6 @@ export const getGamesStats = async (req: Request, res: Response) => {
         const formattedGameStats = gameStats.map((gameStat) => ({
             ...gameStat,
             game: gameStat.game.title,
-            user: gameStat.user.normalizedName,
         }));
         return sendSuccessResponse(res, "Fetched gameStats successfully.", formattedGameStats);
     } catch (error) {

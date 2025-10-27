@@ -30,3 +30,7 @@
     font-size: 3rem;
     font-weight: 600;
 }
+
+.game-timer__button {
+    min-width: 13.25rem;
+}

@@ -28,21 +28,52 @@ export const getUsers = async (req: Request, res: Response) => {
         const users = await prisma.user.findMany({
             where,
             orderBy: { id: "asc" },
-            include: { stats: { include: { game: { select: { id: true, title: true } } } } },
+            include: {
+                stats: {
+                    select: {
+                        id: true,
+                        timePlayed: true,
+                        isEnded: true,
+                        endedAt: true,
+                        createdAt: true,
+                        game: { select: { id: true, title: true } },
+                    },
+                },
+            },
         });
 
         if (users.length === 0) throw new CustomError(notFoundMessage, 404);
 
-        const formattedUsers = users.map((user) => ({
-            ...user,
-            stats: user.stats.map((s) => ({
-                id: s.id,
-                timePlayed: s.timePlayed,
-                gameId: s.gameId,
-                gameTitle: s.game.title,
-                createdAt: s.createdAt,
-            })),
-        }));
+        const formattedUsers = users.map((user) => {
+            const finishedStats = user.stats.filter((s) => s.isEnded === true);
+
+            const aggMap = new Map<
+                number,
+                { gameId: number; title: string; totalTimePlayed: number; totalTimesPlayed: number }
+            >();
+
+            for (const s of finishedStats) {
+                const gid = s.game.id;
+                const title = s.game.title ?? "Unknown";
+                const time = s.timePlayed ?? 0;
+
+                const existing = aggMap.get(gid);
+                if (existing) {
+                    existing.totalTimePlayed += time;
+                    existing.totalTimesPlayed += 1;
+                } else {
+                    aggMap.set(gid, { gameId: gid, title, totalTimePlayed: time, totalTimesPlayed: 1 });
+                }
+            }
+
+            const stats = Array.from(aggMap.values()).sort((a, b) => b.totalTimePlayed - a.totalTimePlayed);
+
+            const { stats: _rawStats, ...userWithoutStats } = user;
+            return {
+                ...userWithoutStats,
+                stats,
+            };
+        });
 
         return sendSuccessResponse(res, "Fetched users successfully.", formattedUsers);
     } catch (error) {
@@ -57,19 +88,44 @@ export const getUser = async (req: Request, res: Response) => {
 
         const user = await prisma.user.findUnique({
             where: { id: validatedId.data.id },
-            include: { stats: { include: { game: { select: { id: true, title: true } } } } },
+            include: {
+                stats: {
+                    select: {
+                        timePlayed: true,
+                        isEnded: true,
+                        endedAt: true,
+                        game: { select: { id: true, title: true } },
+                    },
+                },
+            },
         });
         if (!user) throw new CustomError(`User with id: ${validatedId.data.id} not found!`, 404);
+        const finishedSessions = user.stats.filter((s) => s.isEnded === true);
+
+        const aggMap = new Map<
+            number,
+            { gameId: number; title: string; totalTimePlayed: number; totalTimesPlayed: number }
+        >();
+
+        for (const s of finishedSessions) {
+            const gid = s.game.id;
+            const title = s.game.title ?? "Unknown";
+            const time = s.timePlayed ?? 0;
+
+            const existing = aggMap.get(gid);
+            if (existing) {
+                existing.totalTimePlayed += time;
+                existing.totalTimesPlayed += 1;
+            } else {
+                aggMap.set(gid, { gameId: gid, title, totalTimePlayed: time, totalTimesPlayed: 1 });
+            }
+        }
+
+        const stats = Array.from(aggMap.values()).sort((a, b) => b.totalTimePlayed - a.totalTimePlayed);
 
         const formattedUser = {
             ...user,
-            stats: user.stats.map((s) => ({
-                id: s.id,
-                timePlayed: s.timePlayed,
-                gameId: s.gameId,
-                gameTitle: s.game.title,
-                createdAt: s.createdAt,
-            })),
+            stats,
         };
 
         return sendSuccessResponse(res, "Fetched user successfully.", formattedUser);

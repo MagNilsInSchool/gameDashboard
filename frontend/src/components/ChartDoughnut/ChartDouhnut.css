@@ -1,0 +1,19 @@
+.chart-doughnut {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 60px;
+}
+
+.chart-doughnut__percent-wrapper {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-doughnut__percent {
+    text-align: "center";
+    font-weight: 600;
+    color: var(--black);
+}
