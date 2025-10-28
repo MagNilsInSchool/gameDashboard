@@ -1,10 +1,8 @@
 import axios from "axios";
 import type { NavigateFunction } from "react-router-dom";
-import useToastStore from "../../stores/toastStore";
+import { type iToastInfoSetter } from "../../stores/toastStore";
 
-export const handleApiError = (err: unknown, navigate: NavigateFunction) => {
-    const setToastInfo = useToastStore((s) => s.setToastInfo);
-
+export const handleApiError = (err: unknown, navigate: NavigateFunction, setToastInfo: iToastInfoSetter) => {
     if (axios.isAxiosError(err) && !err.response) {
         setToastInfo({ message: "Server is offline!", type: "error" });
         navigate("/offline");

@@ -8,6 +8,10 @@ import Loader from "../../components/Loader/Loader";
 import { useEffect } from "react";
 import useToastStore from "../../stores/toastStore";
 import ChartDoughnut from "../../components/ChartDoughnut/ChartDoughnut";
+import ChartScatter from "../../components/ChartScatter/ChartScatter";
+import ChartLines from "../../components/ChartLines/ChartLines";
+import ChartHorizontalBarWeeklyTotal from "../../components/ChartHorizontalBarWeeklyTotal/ChartHorizontalBarWeeklyTotal";
+import GameLeaderBoard from "../../components/GameLeaderBoard/GameLeaderBoard";
 
 const ProfilePage: React.FC = () => {
     const setToastInfo = useToastStore((s) => s.setToastInfo);
@@ -41,12 +45,8 @@ const ProfilePage: React.FC = () => {
             <section className="profile-page__row-wrapper">
                 <div className="profile-page__profile-colum-split">
                     {currentUser && <ProfileCard user={currentUser} />}
-                    {currentUser && (
-                        <ChartHorizontalBar
-                            labels={currentUserGameLabels ? currentUserGameLabels : []}
-                            data={currentUserGameStats ? currentUserGameStats : []}
-                        />
-                    )}
+
+                    <ChartHorizontalBar labels={currentUserGameLabels ?? []} data={currentUserGameStats ?? []} />
                 </div>
             </section>
 
@@ -98,6 +98,16 @@ const ProfilePage: React.FC = () => {
                         />
                     </div>
                 </div>
+            </section>
+            <section className="profile-page__row-wrapper">
+                <ChartScatter />
+
+                <ChartLines />
+            </section>
+            <section className="profile-page__row-wrapper">
+                <ChartHorizontalBarWeeklyTotal />
+
+                <GameLeaderBoard />
             </section>
         </div>
     );

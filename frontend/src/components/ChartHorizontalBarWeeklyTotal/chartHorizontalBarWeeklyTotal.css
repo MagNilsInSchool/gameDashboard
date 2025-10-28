@@ -1,0 +1,8 @@
+.chart-bar-weekly-total {
+    height: 100%;
+    flex: 1;
+    position: relative;
+    background-color: var(--main-200);
+    border-radius: 1rem;
+    padding: 1rem;
+}

@@ -6,13 +6,15 @@ import Loader from "../../components/Loader/Loader";
 import { useEffect } from "react";
 import { handleApiError } from "../../api/errorHandler/handleApiErrors";
 import { useNavigate } from "react-router-dom";
+import useToastStore from "../../stores/toastStore";
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
     const { data, isError, error, isLoading } = useGetUsers();
 
     useEffect(() => {
-        if (isError) handleApiError(error, navigate);
+        if (isError) handleApiError(error, navigate, setToastInfo);
     }, [isError, error, navigate]);
 
     if (isLoading) return <Loader />;

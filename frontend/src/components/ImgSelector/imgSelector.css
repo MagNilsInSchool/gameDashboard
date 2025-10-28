@@ -32,7 +32,7 @@
         .image-selector__button,
         .image-selector__img {
             cursor: pointer;
-            background-color: rgb(243, 242, 242);
+            background-color: #84845F;
         }
     }
 

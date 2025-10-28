@@ -23,29 +23,25 @@ const options = {
     plugins: {
         legend: { display: false },
         datalabels: {
-            anchor: "end", // position relative to bar
+            anchor: "center", // position relative to bar
             align: "center", // text position (try "end", "start", "right")
             formatter: (value: number) => `${value} minutes`, // what to render
-            color: "#111",
+            color: "#fff",
             font: { weight: "600" },
         },
     },
     scales: {
         x: {
-            beginAtZero: true,
-            // remove grid lines and axis border
-            grid: { display: false, drawBorder: false },
-            border: { display: false },
-            // hide numeric tick labels on the x axis
+            grid: { display: false },
             ticks: { display: false },
-            // hide axis title if any
+            border: { display: true, color: "rgb(40, 45, 50)", width: 3 },
             title: { display: false },
         },
         y: {
             // keep category labels on y, but remove grid lines if you want
-            border: { display: false },
-            ticks: { autoSkip: false },
             grid: { display: false },
+            border: { display: true, color: "rgb(40, 45, 50)", width: 3 },
+            ticks: { autoSkip: false },
         },
     },
 } as unknown as ChartOptions<"bar">;
@@ -62,9 +58,10 @@ const ChartHorizontalBar: React.FC<Props> = ({ labels, data }) => {
             {
                 label: "Minutes played",
                 data: data.map((d) => Number(d)),
-                backgroundColor: "rgba(255,99,132,0.9)",
-                borderWidth: 0, // remove stroke
-                barThickness: 18, // control thickness
+                backgroundColor: "rgb(102, 102, 102)",
+                borderWidth: 2,
+                barThickness: 40,
+                borderSkipped: false,
             },
         ],
     };

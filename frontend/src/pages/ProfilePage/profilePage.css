@@ -6,6 +6,7 @@
 
 .profile-page__row-wrapper {
     --row-max-height: 350px;
+    height: 100%;
     max-height: var(--row-max-height);
     display: flex;
     width: 100%;

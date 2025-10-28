@@ -7,13 +7,15 @@ import { handleApiError } from "../../api/errorHandler/handleApiErrors";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
 import useUserStore from "../../stores/userStore";
+import useToastStore from "../../stores/toastStore";
 const GamesPage: React.FC = () => {
     const navigate = useNavigate();
     const activeUser = useUserStore((s) => s.activeUser);
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
     const { data, isError, error, isLoading } = useGetGames();
 
     useEffect(() => {
-        if (isError) handleApiError(error, navigate);
+        if (isError) handleApiError(error, navigate, setToastInfo);
     }, [isError, error, navigate]);
 
     if (isLoading) return <Loader />;
