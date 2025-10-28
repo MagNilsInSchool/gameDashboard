@@ -1,4 +1,3 @@
-import type { iGameStat } from "./gameStat";
 import type { ApiResponse } from "./response";
 
 export type iUsersResponse = ApiResponse<iUser[]>;
@@ -11,7 +10,14 @@ export interface iUser {
     normalizedName: string;
     email: string;
     image?: string | null;
-    stats?: iGameStat[];
+    stats?: iUserStats[];
     createdAt?: string | Date;
     updatedAt?: string | Date;
+}
+
+interface iUserStats {
+    gameId: number;
+    title: string;
+    totalTimePlayed: number;
+    numberOfPlays: number;
 }

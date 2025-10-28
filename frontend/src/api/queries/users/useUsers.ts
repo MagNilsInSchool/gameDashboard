@@ -5,7 +5,7 @@ export const useGetUsers = (normalizedName?: string) => {
     return useQuery({
         queryKey: ["users", normalizedName ?? null],
         queryFn: () => getUsers(normalizedName),
-        staleTime: 60_000,
+        staleTime: 10_000,
         placeholderData: (previousData) => previousData,
     });
 };
@@ -15,7 +15,7 @@ export const useGetUser = (id: number) => {
         queryKey: ["users", id],
         queryFn: () => getUser(id),
         enabled: !!id,
-        staleTime: 30_000,
+        staleTime: 10_000,
         placeholderData: (previousData) => previousData,
     });
 };

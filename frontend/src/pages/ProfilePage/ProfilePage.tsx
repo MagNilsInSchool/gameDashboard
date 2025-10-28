@@ -1,59 +1,84 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CtaButton from "../../components/CtaButton/CtaButton";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
-import useUserStore from "../../stores/userStore";
 import "./profilePage.css";
+import ChartHorizontalBar from "../../components/ChartHorizontalBar/ChartHorizontalBar";
+import { useGetUser } from "../../api/queries/users/useUsers";
+import Loader from "../../components/Loader/Loader";
+import { useEffect } from "react";
+import useToastStore from "../../stores/toastStore";
+import ChartDoughnut from "../../components/ChartDoughnut/ChartDoughnut";
+import ChartScatter from "../../components/ChartScatter/ChartScatter";
+import ChartLines from "../../components/ChartLines/ChartLines";
+import ChartHorizontalBarWeeklyTotal from "../../components/ChartHorizontalBarWeeklyTotal/ChartHorizontalBarWeeklyTotal";
+import GameLeaderBoard from "../../components/GameLeaderBoard/GameLeaderBoard";
+
 const ProfilePage: React.FC = () => {
-    const { activeUser } = useUserStore();
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
+    const { id } = useParams();
+    const userId = Number(id);
+
     const navigate = useNavigate();
+
+    const {
+        data: currentUser,
+        isLoading: isCurrentUserLoading,
+        isError: isCurrentUserError,
+        error: currentUserError,
+    } = useGetUser(userId);
+
+    useEffect(() => {
+        if (isCurrentUserError && currentUserError) {
+            setToastInfo({ message: currentUserError.message, type: "error" });
+            navigate("/");
+        }
+    }, [isCurrentUserError, currentUserError]);
+
+    const currentUserGameLabels = currentUser?.stats?.map((stat) => stat.title);
+    const currentUserGameStats = currentUser?.stats?.map((stat) => stat.totalTimePlayed);
+    const currentUserTotalTimePlayed = currentUserGameStats?.reduce((accum, current) => accum + current, 0);
+
+    if (isCurrentUserLoading) return <Loader />;
 
     return (
         <div className="profile-page wrapper--max-width">
             <section className="profile-page__row-wrapper">
-                {activeUser && <ProfileCard user={activeUser} />}
-                <ul className="profile-page__minutes-per-game-list">
-                    <li className="profile-page__minutes-per-game-list-item">
-                        <h2 className="profile-page__minutes-per-game-title">Game 1</h2>
-                        <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                    </li>
-                    <li className="profile-page__minutes-per-game-list-item">
-                        <h2 className="profile-page__minutes-per-game-title">Game 2</h2>
-                        <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                    </li>
-                    <li className="profile-page__minutes-per-game-list-item">
-                        <h2 className="profile-page__minutes-per-game-title">Game 3</h2>
-                        <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                    </li>
-                    <li className="profile-page__minutes-per-game-list-item">
-                        <h2 className="profile-page__minutes-per-game-title">Game 4</h2>
-                        <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                    </li>
-                </ul>
+                <div className="profile-page__profile-colum-split">
+                    {currentUser && <ProfileCard user={currentUser} />}
+
+                    <ChartHorizontalBar labels={currentUserGameLabels ?? []} data={currentUserGameStats ?? []} />
+                </div>
             </section>
+
             <section className="profile-page__row-wrapper">
                 <div className="profile-page__column-wrapper">
                     <ul className="profile-page__minutes-per-game-list">
-                        <li className="profile-page__minutes-per-game-list-item">
-                            <h2 className="profile-page__minutes-per-game-title">Game 1</h2>
-                            <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                        </li>
-                        <li className="profile-page__minutes-per-game-list-item">
-                            <h2 className="profile-page__minutes-per-game-title">Game 2</h2>
-                            <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                        </li>
-                        <li className="profile-page__minutes-per-game-list-item">
-                            <h2 className="profile-page__minutes-per-game-title">Game 3</h2>
-                            <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                        </li>
-                        <li className="profile-page__minutes-per-game-list-item">
-                            <h2 className="profile-page__minutes-per-game-title">Game 4</h2>
-                            <div className="profile-page__minutes-per-game-progress-bar">40 min</div>
-                        </li>
+                        {currentUser?.stats?.map((stat) => {
+                            const userTotalTimePlayed = currentUserTotalTimePlayed ?? 0;
+                            const gameTotalTimePlayed = stat.totalTimePlayed ?? 0;
+                            const percent = Math.round((gameTotalTimePlayed / userTotalTimePlayed) * 100);
+                            const rest = Math.max(0, userTotalTimePlayed - gameTotalTimePlayed);
+                            return (
+                                <li key={stat.gameId} className="profile-page__minutes-per-game-list-item">
+                                    <img
+                                        className="profile-page__minutes-per-game-list-item-icon"
+                                        src="/assets/icons/game-logo.svg"
+                                        alt="Game logotype"
+                                    />
+                                    <h2 className="profile-page__minutes-per-game-list-title">{stat.title}</h2>
+                                    <ChartDoughnut
+                                        labels={[stat.title, "Other"]}
+                                        data={[gameTotalTimePlayed, rest]}
+                                        percent={percent}
+                                    />
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
                 <div className="profile-page__column-wrapper profile-page__column-wrapper--split-rows">
                     <article className="profile-page__total-minute-tracker">
-                        <h2 className="profile-page__total-minutes">164 min</h2>
+                        <h2 className="profile-page__total-minutes">{`${currentUserTotalTimePlayed} min`}</h2>
                         <p className="profile-page__total-minutes-description">Total time played</p>
                     </article>
                     <div className="profile-page__button-row">
@@ -73,6 +98,16 @@ const ProfilePage: React.FC = () => {
                         />
                     </div>
                 </div>
+            </section>
+            <section className="profile-page__row-wrapper">
+                <ChartScatter />
+
+                <ChartLines />
+            </section>
+            <section className="profile-page__row-wrapper">
+                <ChartHorizontalBarWeeklyTotal />
+
+                <GameLeaderBoard />
             </section>
         </div>
     );

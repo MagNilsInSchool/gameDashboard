@@ -17,7 +17,7 @@ const GameTimer: React.FC<Props> = ({ timeInSeconds, timerFunction, buttonText }
                 <h2 className="game-timer__title">TIME PLAYING</h2>
                 <p className="game-timer__time-display">{`${hours}:${minutes}:${seconds}`}</p>
             </div>
-            <CtaButton text={buttonText} size="large" onClick={timerFunction} />
+            <CtaButton text={buttonText} size="large" onClick={timerFunction} className="game-timer__button" />
         </article>
     );
 };

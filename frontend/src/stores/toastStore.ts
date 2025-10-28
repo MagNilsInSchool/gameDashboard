@@ -1,12 +1,14 @@
 import { create } from "zustand";
-interface iToastInfo {
+export interface iToastInfo {
     message: string;
     type: "success" | "error" | "info";
     duration?: number;
 }
+
+export type iToastInfoSetter = (info: iToastInfo | null | ((prev: iToastInfo | null) => iToastInfo | null)) => void;
 interface ToastStore {
     toastInfo: iToastInfo | null;
-    setToastInfo: (info: iToastInfo | null | ((prev: iToastInfo | null) => iToastInfo | null)) => void;
+    setToastInfo: iToastInfoSetter;
 }
 
 const useToastStore = create<ToastStore>((set) => ({
