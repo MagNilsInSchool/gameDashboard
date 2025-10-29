@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-const randomPastDate = (maxDaysBack = 30) => {
+const randomPastDate = (maxDaysBack = 20) => {
     const now = Date.now();
     const past = now - Math.floor(Math.random() * maxDaysBack * 24 * 60 * 60 * 1000);
     return new Date(past);
@@ -59,7 +59,7 @@ const seed = async () => {
         gameId: number;
         timePlayed?: number | null;
         isEnded?: boolean;
-        createdAt?: Date;
+        createdAt: Date;
         endedAt?: Date | null;
     }[] = [];
 
@@ -68,8 +68,8 @@ const seed = async () => {
         for (const g of playedGames) {
             const createdAt = randomPastDate(30);
 
-            const minSec = 5 * 60;
-            const maxSec = 3 * 60 * 60;
+            const minSec = 3 * 60;
+            const maxSec = 2 * 60 * 60;
             const durationSec = Math.floor(Math.random() * (maxSec - minSec + 1)) + minSec;
             const endedAt = new Date(createdAt.getTime() + durationSec * 1000);
 

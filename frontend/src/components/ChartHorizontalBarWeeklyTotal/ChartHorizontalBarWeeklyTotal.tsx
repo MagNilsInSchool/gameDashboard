@@ -12,19 +12,29 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import "./chartHorizontalBarWeeklyTotal.css";
+import { useGetWeeklyAverages } from "../../api/queries/sessions/useSessions";
+import Loader from "../Loader/Loader";
+import { secondsToHMS } from "../../utils/dateAndTime";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-interface Props {
-    labels?: string[];
-    data?: number[];
-    height?: number;
-}
+// interface Props {
+//     labels: string[];
+//     data: number[];
+// }
 
-const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({
-    labels = ["Call of beans", "Beany Kong", "Grand theft bean", "Super Bean brothers"],
-    data = [120, 90, 150, 60],
-}) => {
+const ChartHorizontalBarWeeklyTotal: React.FC = () => {
+    const { data, isLoading } = useGetWeeklyAverages();
+
+    const weeklyAveragesTime = data
+        ? data.map((weeklyAverage) => {
+              const { minutes } = secondsToHMS(weeklyAverage.dayAverage);
+              return minutes;
+          })
+        : [];
+
+    const weeklyAveragesTitles = data ? data.map((weeklyAverage) => weeklyAverage.title) : [];
+
     const options: ChartOptions<"bar"> = {
         indexAxis: "y" as const, // horizontal bars
         responsive: true,
@@ -50,11 +60,11 @@ const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({
     };
 
     const chartData: ChartData<"bar", number[], string> = {
-        labels,
+        labels: weeklyAveragesTitles,
         datasets: [
             {
                 label: "", // no label shown because legend hidden
-                data,
+                data: weeklyAveragesTime,
                 backgroundColor: "rgb(102, 102, 102)",
                 borderWidth: 2,
                 barThickness: 40,
@@ -65,7 +75,7 @@ const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({
 
     return (
         <div className="chart-bar-weekly-total">
-            <Bar data={chartData} options={options} />
+            {isLoading ? <Loader className="loader--center" /> : <Bar data={chartData} options={options} />}
         </div>
     );
 };

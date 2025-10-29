@@ -12,6 +12,8 @@ import ChartScatter from "../../components/ChartScatter/ChartScatter";
 import ChartLines from "../../components/ChartLines/ChartLines";
 import ChartHorizontalBarWeeklyTotal from "../../components/ChartHorizontalBarWeeklyTotal/ChartHorizontalBarWeeklyTotal";
 import GameLeaderBoard from "../../components/GameLeaderBoard/GameLeaderBoard";
+import { useGetWeeklyAverages } from "../../api/queries/sessions/useSessions";
+import { secondsToHMS } from "../../utils/dateAndTime";
 
 const ProfilePage: React.FC = () => {
     const setToastInfo = useToastStore((s) => s.setToastInfo);
@@ -37,6 +39,8 @@ const ProfilePage: React.FC = () => {
     const currentUserGameLabels = currentUser?.stats?.map((stat) => stat.title);
     const currentUserGameStats = currentUser?.stats?.map((stat) => stat.totalTimePlayed);
     const currentUserTotalTimePlayed = currentUserGameStats?.reduce((accum, current) => accum + current, 0);
+    const { hours, minutes } = secondsToHMS(currentUserTotalTimePlayed ?? 0);
+    const totalTimePlayedString = hours ? `${hours}h ${minutes}m` : `${minutes}m`;
 
     if (isCurrentUserLoading) return <Loader />;
 
@@ -78,7 +82,7 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <div className="profile-page__column-wrapper profile-page__column-wrapper--split-rows">
                     <article className="profile-page__total-minute-tracker">
-                        <h2 className="profile-page__total-minutes">{`${currentUserTotalTimePlayed} min`}</h2>
+                        <h2 className="profile-page__total-minutes">{totalTimePlayedString}</h2>
                         <p className="profile-page__total-minutes-description">Total time played</p>
                     </article>
                     <div className="profile-page__button-row">
