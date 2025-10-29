@@ -11,17 +11,11 @@ import {
 } from "chart.js";
 import "./chartLines.css";
 import { Line } from "react-chartjs-2";
+import type { iGameWeeklyStat } from "../../interfaces/game";
+import { useState } from "react";
+import { secondsToMinutes } from "../../utils/dateAndTime";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
-
-interface Props {
-    labels?: string[];
-    data?: number[];
-    height?: number;
-    width?: number;
-}
-
-const defaultLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
 const options: ChartOptions<"line"> = {
     responsive: true,
@@ -35,9 +29,6 @@ const options: ChartOptions<"line"> = {
             borderWidth: 3,
             tension: 0,
             fill: true,
-        },
-        point: {
-            radius: 1, // hide points
         },
     },
     scales: {
@@ -55,24 +46,75 @@ const options: ChartOptions<"line"> = {
         },
     },
 };
+interface Props {
+    gamesData: iGameWeeklyStat[];
+}
+const ChartLines: React.FC<Props> = ({ gamesData }) => {
+    const [option, setOption] = useState(0);
 
-const ChartLines: React.FC<Props> = ({ labels = defaultLabels, data = [12, 19, 7, 14, 10, 20] }) => {
-    const chartData: ChartData<"line", number[], string> = {
+    const selectedGame = gamesData[option];
+
+    // collect all unique days across all users in this game
+    const allDays = new Set<string>();
+    selectedGame.stats.forEach((stat) => {
+        stat.sessions.forEach((session) => {
+            const day = new Date(session.endedAt).toISOString().slice(0, 10);
+            allDays.add(day);
+        });
+    });
+    const sortedDays = Array.from(allDays).sort();
+
+    // build one dataset per user, with daily totals
+    const datasets = selectedGame.stats.map((stat, idx) => {
+        // aggregate timePlayed per day for this user
+        const dailyMap = new Map<string, number>();
+        stat.sessions.forEach((session) => {
+            const day = new Date(session.endedAt).toISOString().slice(0, 10);
+            dailyMap.set(day, (dailyMap.get(day) ?? 0) + secondsToMinutes(session.timePlayed));
+        });
+
+        // map sorted days to data array (null if user didn't play that day)
+        const data = sortedDays.map((day) => dailyMap.get(day) ?? 0);
+
+        const hue = (idx * 360) / selectedGame.stats.length;
+        const color = `hsl(${hue}, 70%, 50%)`;
+
+        return {
+            label: stat.name,
+            data,
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 3,
+            pointRadius: 3,
+            tension: 0,
+            fill: false,
+        };
+    });
+
+    // x-axis labels are the sorted days
+    const labels = sortedDays.map((day) =>
+        new Date(day).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    );
+
+    const chartData: ChartData<"line", (number | null)[], string> = {
         labels,
-        datasets: [
-            {
-                label: "",
-                data,
-                backgroundColor: "rgb(102, 102, 102)",
-                datalabels: { display: false },
-                borderColor: "rgb(204, 204, 204)",
-                pointRadius: 3,
-            },
-        ],
+        datasets,
     };
 
     return (
         <div className="chart-lines">
+            <select
+                className="chart-lines__selector"
+                name="game"
+                id="game"
+                defaultValue={0}
+                onChange={(e) => setOption(Number(e.target.value))}>
+                {gamesData.map((gameData, i) => (
+                    <option value={i} className="chart-lines__selector-option" key={i}>
+                        {gameData.title}
+                    </option>
+                ))}
+            </select>
             <Line data={chartData} options={options} />
         </div>
     );

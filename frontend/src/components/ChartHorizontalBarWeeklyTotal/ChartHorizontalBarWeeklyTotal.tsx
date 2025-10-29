@@ -12,35 +12,25 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import "./chartHorizontalBarWeeklyTotal.css";
-import { useGetWeeklyAverages } from "../../api/queries/sessions/useSessions";
-import Loader from "../Loader/Loader";
-import { secondsToHMS } from "../../utils/dateAndTime";
+import { secondsToMinutes } from "../../utils/dateAndTime";
+import type { iGameWeeklyStat } from "../../interfaces/game";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// interface Props {
-//     labels: string[];
-//     data: number[];
-// }
+interface Props {
+    gamesData: iGameWeeklyStat[];
+}
 
-const ChartHorizontalBarWeeklyTotal: React.FC = () => {
-    const { data, isLoading } = useGetWeeklyAverages();
-
-    const weeklyAveragesTime = data
-        ? data.map((weeklyAverage) => {
-              const { minutes } = secondsToHMS(weeklyAverage.dayAverage);
-              return minutes;
-          })
-        : [];
-
-    const weeklyAveragesTitles = data ? data.map((weeklyAverage) => weeklyAverage.title) : [];
+const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({ gamesData }) => {
+    const weeklyAveragesTitles = gamesData.map((gameData) => gameData.title);
+    const weeklyAveragesTime = gamesData.map((gameData) => Math.round(secondsToMinutes(gameData.totalPlayed) / 7));
 
     const options: ChartOptions<"bar"> = {
-        indexAxis: "y" as const, // horizontal bars
+        indexAxis: "y" as const,
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { display: false }, // hide legend
+            legend: { display: false },
             tooltip: { enabled: true },
         },
 
@@ -63,7 +53,6 @@ const ChartHorizontalBarWeeklyTotal: React.FC = () => {
         labels: weeklyAveragesTitles,
         datasets: [
             {
-                label: "", // no label shown because legend hidden
                 data: weeklyAveragesTime,
                 backgroundColor: "rgb(102, 102, 102)",
                 borderWidth: 2,
@@ -75,7 +64,7 @@ const ChartHorizontalBarWeeklyTotal: React.FC = () => {
 
     return (
         <div className="chart-bar-weekly-total">
-            {isLoading ? <Loader className="loader--center" /> : <Bar data={chartData} options={options} />}
+            <Bar data={chartData} options={options} />
         </div>
     );
 };

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getGame, getGames } from "../../handlers/games";
+import { getGame, getGames, getWeeklyGamesStats, getWeeklyGameStats } from "../../handlers/games";
 
 export const useGetGames = (normalizedTitle?: string) => {
     return useQuery({
@@ -15,6 +15,25 @@ export const useGetGame = (id: number) => {
         queryKey: ["games", id],
         queryFn: () => getGame(id),
         enabled: !!id,
+        staleTime: 30_000,
+        placeholderData: (previousData) => previousData,
+    });
+};
+
+export const useGetWeeklyGameStats = (id: number) => {
+    return useQuery({
+        queryKey: ["weeklygamestat", id],
+        queryFn: () => getWeeklyGameStats(id),
+        enabled: !!id,
+        staleTime: 30_000,
+        placeholderData: (previousData) => previousData,
+    });
+};
+
+export const useGetWeeklyGamesStats = () => {
+    return useQuery({
+        queryKey: ["weeklygamestats"],
+        queryFn: () => getWeeklyGamesStats(),
         staleTime: 30_000,
         placeholderData: (previousData) => previousData,
     });

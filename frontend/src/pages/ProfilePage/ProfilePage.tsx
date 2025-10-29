@@ -12,8 +12,8 @@ import ChartScatter from "../../components/ChartScatter/ChartScatter";
 import ChartLines from "../../components/ChartLines/ChartLines";
 import ChartHorizontalBarWeeklyTotal from "../../components/ChartHorizontalBarWeeklyTotal/ChartHorizontalBarWeeklyTotal";
 import GameLeaderBoard from "../../components/GameLeaderBoard/GameLeaderBoard";
-import { useGetWeeklyAverages } from "../../api/queries/sessions/useSessions";
 import { secondsToHMS } from "../../utils/dateAndTime";
+import { useGetWeeklyGamesStats } from "../../api/queries/games/useGames";
 
 const ProfilePage: React.FC = () => {
     const setToastInfo = useToastStore((s) => s.setToastInfo);
@@ -28,21 +28,29 @@ const ProfilePage: React.FC = () => {
         isError: isCurrentUserError,
         error: currentUserError,
     } = useGetUser(userId);
+    const {
+        data: sevenDayStats,
+        isLoading: isSevenDayStatsLoading,
+        isError: isSevenDayStatsError,
+        error: sevenDayStatsError,
+    } = useGetWeeklyGamesStats();
 
     useEffect(() => {
-        if (isCurrentUserError && currentUserError) {
-            setToastInfo({ message: currentUserError.message, type: "error" });
+        if (isCurrentUserError || isSevenDayStatsError) {
+            if (currentUserError) setToastInfo({ message: currentUserError.message, type: "error" });
+            if (sevenDayStatsError) setToastInfo({ message: sevenDayStatsError.message, type: "error" });
             navigate("/");
         }
-    }, [isCurrentUserError, currentUserError]);
+    }, [isCurrentUserError, currentUserError, isSevenDayStatsError, sevenDayStatsError]);
 
+    //* Current "logged in" user info:
     const currentUserGameLabels = currentUser?.stats?.map((stat) => stat.title);
     const currentUserGameStats = currentUser?.stats?.map((stat) => stat.totalTimePlayed);
     const currentUserTotalTimePlayed = currentUserGameStats?.reduce((accum, current) => accum + current, 0);
     const { hours, minutes } = secondsToHMS(currentUserTotalTimePlayed ?? 0);
     const totalTimePlayedString = hours ? `${hours}h ${minutes}m` : `${minutes}m`;
 
-    if (isCurrentUserLoading) return <Loader />;
+    if (isCurrentUserLoading || isSevenDayStatsLoading) return <Loader />;
 
     return (
         <div className="profile-page wrapper--max-width">
@@ -103,16 +111,20 @@ const ProfilePage: React.FC = () => {
                     </div>
                 </div>
             </section>
-            <section className="profile-page__row-wrapper">
-                <ChartScatter />
 
-                <ChartLines />
-            </section>
-            <section className="profile-page__row-wrapper">
-                <ChartHorizontalBarWeeklyTotal />
+            {sevenDayStats && (
+                <>
+                    <section className="profile-page__row-wrapper">
+                        <ChartScatter gamesData={sevenDayStats} />
+                        <ChartLines gamesData={sevenDayStats} />
+                    </section>
 
-                <GameLeaderBoard />
-            </section>
+                    <section className="profile-page__row-wrapper">
+                        <ChartHorizontalBarWeeklyTotal gamesData={sevenDayStats} />
+                        <GameLeaderBoard gamesData={sevenDayStats} />
+                    </section>
+                </>
+            )}
         </div>
     );
 };

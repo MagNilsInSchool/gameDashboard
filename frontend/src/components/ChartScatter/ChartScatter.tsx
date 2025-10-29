@@ -9,32 +9,33 @@ import {
 } from "chart.js";
 import "./chartScatter.css";
 import { Scatter } from "react-chartjs-2";
+import { secondsToMinutes } from "../../utils/dateAndTime";
+import type { iGameWeeklyStat } from "../../interfaces/game";
+import { useState } from "react";
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 
 interface Point {
     x: number;
     y: number;
+    label: string;
 }
-
 interface Props {
-    points?: Point[]; // array of { x, y }
+    gamesData: iGameWeeklyStat[];
 }
 
-const ChartScatter: React.FC<Props> = ({ points = [] }) => {
-    // sample fallback data if none provided
-    const sample: Point[] = [
-        { x: 10, y: 20 },
-        { x: 15, y: 10 },
-        { x: 20, y: 30 },
-        { x: 25, y: 18 },
-    ];
+const ChartScatter: React.FC<Props> = ({ gamesData }) => {
+    const [option, setOption] = useState(0);
+    const points =
+        gamesData[option]?.stats.map((stat) => {
+            return { x: stat.count, y: secondsToMinutes(stat.totalPlayed), label: stat.name };
+        }) ?? [];
 
     const data: ChartData<"scatter", Point[], unknown> = {
         datasets: [
             {
-                label: "Samples",
-                data: points.length ? points : sample,
+                label: "Total sessions",
+                data: points,
                 backgroundColor: "#fff",
                 borderWidth: 2,
                 borderColor: "rgb(40, 45, 50)",
@@ -48,7 +49,15 @@ const ChartScatter: React.FC<Props> = ({ points = [] }) => {
         maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
-            tooltip: { enabled: true },
+            tooltip: {
+                enabled: true,
+                callbacks: {
+                    label: (ctx) => {
+                        const point = ctx.raw as Point;
+                        return `${point.label}: ${point.y} min (${point.x} sessions)`;
+                    },
+                },
+            },
             datalabels: { display: false },
         },
         scales: {
@@ -56,8 +65,13 @@ const ChartScatter: React.FC<Props> = ({ points = [] }) => {
                 grid: { display: false },
                 border: { display: true, color: "rgb(40, 45, 50)", width: 3 },
                 type: "linear",
+
+                beginAtZero: true,
                 position: "bottom",
                 title: { display: true, text: "Times" },
+                ticks: {
+                    stepSize: 1,
+                },
             },
             y: {
                 grid: { display: false },
@@ -71,6 +85,18 @@ const ChartScatter: React.FC<Props> = ({ points = [] }) => {
 
     return (
         <div className="scatter-chart">
+            <select
+                className="scatter-chart__selector"
+                name="game"
+                id="game"
+                defaultValue={0}
+                onChange={(e) => setOption(Number(e.target.value))}>
+                {gamesData.map((gameData, i) => (
+                    <option value={i} className="scatter-chart__selector-option" key={i}>
+                        {gameData.title}
+                    </option>
+                ))}
+            </select>
             <Scatter data={data} options={options} />
         </div>
     );

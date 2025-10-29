@@ -1,33 +1,33 @@
-import { useGetWeeklyLeaderBoard } from "../../api/queries/sessions/useSessions";
+import type { iGameWeeklyStat } from "../../interfaces/game";
 import { secondsToHMS } from "../../utils/dateAndTime";
-import Loader from "../Loader/Loader";
 import "./gamelLeaderBoard.css";
-const GameLeaderBoard = () => {
-    const { data, isLoading } = useGetWeeklyLeaderBoard();
+interface Props {
+    gamesData: iGameWeeklyStat[];
+}
+const GameLeaderBoard: React.FC<Props> = ({ gamesData }) => {
+    const sortedGames = [...gamesData].sort((a, b) => {
+        const aTime = a.stats[0]?.totalPlayed ?? 0;
+        const bTime = b.stats[0]?.totalPlayed ?? 0;
+        return bTime - aTime;
+    });
 
     return (
         <ul className="game-leaderboard">
-            {isLoading ? (
-                <Loader className="loader--center" />
-            ) : (
-                <>
-                    <h2 className="game-leaderboard__title">Leaderboard</h2>
-                    <h3 className="game-leaderboard__entry-category">Name</h3>
-                    <h3 className="game-leaderboard__entry-category">Game</h3>
-                    <h3 className="game-leaderboard__entry-category">Time Played</h3>
-                    {data?.map((entry) => {
-                        const { hours, minutes } = secondsToHMS(entry.played);
-                        const timePlayedString = hours ? `${hours} hours ${minutes} minutes` : `${minutes} minutes`;
-                        return (
-                            <li className="game-leaderboard__entry" key={entry.gameId}>
-                                <span className="game-leaderboard__entry-data">{entry.user}</span>
-                                <span className="game-leaderboard__entry-data">{entry.game}</span>
-                                <span className="game-leaderboard__entry-data">{timePlayedString}</span>
-                            </li>
-                        );
-                    })}
-                </>
-            )}
+            <h2 className="game-leaderboard__title">Leaderboard</h2>
+            <h3 className="game-leaderboard__entry-category">Name</h3>
+            <h3 className="game-leaderboard__entry-category">Game</h3>
+            <h3 className="game-leaderboard__entry-category">Time Played</h3>
+            {sortedGames.map((entry) => {
+                const { hours, minutes } = secondsToHMS(entry.stats[0].totalPlayed);
+                const timePlayedString = hours ? `${hours}h ${minutes}m` : `${minutes}m`;
+                return (
+                    <li className="game-leaderboard__entry" key={entry.id}>
+                        <span className="game-leaderboard__entry-data">{entry.stats[0].name}</span>
+                        <span className="game-leaderboard__entry-data">{entry.title}</span>
+                        <span className="game-leaderboard__entry-data">{timePlayedString}</span>
+                    </li>
+                );
+            })}
         </ul>
     );
 };
