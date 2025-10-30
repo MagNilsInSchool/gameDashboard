@@ -15,16 +15,67 @@ export const getUsers = async (req: Request, res: Response) => {
 
         const where: Prisma.UserWhereInput = {};
 
-        if (validatedUserFilter.data.normalizedName)
+        let notFoundMessage = "No users found.";
+
+        if (validatedUserFilter.data.normalizedName) {
             where.normalizedName = {
                 contains: validatedUserFilter.data.normalizedName,
                 mode: "insensitive",
             };
+            notFoundMessage = `No user match your query: '${validatedUserFilter.data.normalizedName}'.`;
+        }
 
-        const users: User[] = await prisma.user.findMany({ where, orderBy: { id: "asc" } });
-        if (users.length === 0) throw new CustomError("No users found.", 404);
+        const users = await prisma.user.findMany({
+            where,
+            orderBy: { id: "asc" },
+            include: {
+                stats: {
+                    select: {
+                        id: true,
+                        timePlayed: true,
+                        isEnded: true,
+                        endedAt: true,
+                        createdAt: true,
+                        game: { select: { id: true, title: true } },
+                    },
+                },
+            },
+        });
 
-        return sendSuccessResponse(res, "Fetched users successfully.", users);
+        if (users.length === 0) throw new CustomError(notFoundMessage, 404);
+
+        const formattedUsers = users.map((user) => {
+            const finishedStats = user.stats.filter((s) => s.isEnded === true);
+
+            const aggMap = new Map<
+                number,
+                { gameId: number; title: string; totalTimePlayed: number; totalTimesPlayed: number }
+            >();
+
+            for (const s of finishedStats) {
+                const gid = s.game.id;
+                const title = s.game.title ?? "Unknown";
+                const time = s.timePlayed ?? 0;
+
+                const existing = aggMap.get(gid);
+                if (existing) {
+                    existing.totalTimePlayed += time;
+                    existing.totalTimesPlayed += 1;
+                } else {
+                    aggMap.set(gid, { gameId: gid, title, totalTimePlayed: time, totalTimesPlayed: 1 });
+                }
+            }
+
+            const stats = Array.from(aggMap.values()).sort((a, b) => b.totalTimePlayed - a.totalTimePlayed);
+
+            const { stats: _rawStats, ...userWithoutStats } = user;
+            return {
+                ...userWithoutStats,
+                stats,
+            };
+        });
+
+        return sendSuccessResponse(res, "Fetched users successfully.", formattedUsers);
     } catch (error) {
         return handleError(error, res);
     }
@@ -35,10 +86,49 @@ export const getUser = async (req: Request, res: Response) => {
         const validatedId = postGresIdSchema.safeParse(req.params);
         if (!validatedId.success) throw validatedId.error;
 
-        const user: User | null = await prisma.user.findUnique({ where: { id: validatedId.data.id } });
+        const user = await prisma.user.findUnique({
+            where: { id: validatedId.data.id },
+            include: {
+                stats: {
+                    select: {
+                        timePlayed: true,
+                        isEnded: true,
+                        endedAt: true,
+                        game: { select: { id: true, title: true } },
+                    },
+                },
+            },
+        });
         if (!user) throw new CustomError(`User with id: ${validatedId.data.id} not found!`, 404);
+        const finishedSessions = user.stats.filter((s) => s.isEnded === true);
 
-        return sendSuccessResponse(res, "Fetched user successfully.", user);
+        const aggMap = new Map<
+            number,
+            { gameId: number; title: string; totalTimePlayed: number; totalTimesPlayed: number }
+        >();
+
+        for (const s of finishedSessions) {
+            const gid = s.game.id;
+            const title = s.game.title ?? "Unknown";
+            const time = s.timePlayed ?? 0;
+
+            const existing = aggMap.get(gid);
+            if (existing) {
+                existing.totalTimePlayed += time;
+                existing.totalTimesPlayed += 1;
+            } else {
+                aggMap.set(gid, { gameId: gid, title, totalTimePlayed: time, totalTimesPlayed: 1 });
+            }
+        }
+
+        const stats = Array.from(aggMap.values()).sort((a, b) => b.totalTimePlayed - a.totalTimePlayed);
+
+        const formattedUser = {
+            ...user,
+            stats,
+        };
+
+        return sendSuccessResponse(res, "Fetched user successfully.", formattedUser);
     } catch (error) {
         return handleError(error, res);
     }

@@ -3,4 +3,6 @@ const stringLength = (string) => {
 };
 
 const string = "Anna-Katarina";
-console.log(string.length);
+const bah = "Kuckiliku";
+
+console.log(`${string.trim().toLowerCase()} ${bah.trim().toLowerCase()}`.length);

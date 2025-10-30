@@ -53,5 +53,6 @@
     .profile-carousel__button:hover {
         transform: scale(1.15) translateY(-5px);
         cursor: pointer;
+
     }
 }

@@ -5,8 +5,22 @@
 }
 
 .profile-page__row-wrapper {
+    --row-max-height: 350px;
+    height: 100%;
+    max-height: var(--row-max-height);
     display: flex;
+    width: 100%;
     gap: var(--spacing-xl);
+}
+
+.profile-page__profile-colum-split {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.profile-page__profile-colum-split .profile-card {
+    grid-column: span 1;
 }
 
 .profile-page__column-wrapper {
@@ -18,18 +32,42 @@
     gap: 2rem;
 }
 
+
+
 .profile-page__minutes-per-game-list {
+    position: relative;
     display: grid;
-    background-color: var(--main-200);
-    grid-template-rows: repeat(4, minmax(0, 1fr));
-    gap: var(--spacing-l);
+    max-height: var(--row-max-height);
     height: 100%;
     width: 100%;
+    background-color: var(--main-200);
+    border-radius: 1rem;
+    padding-inline: 1.5rem;
+    padding-top: .5rem;
 }
 
 .profile-page__minutes-per-game-list-item {
+    width: 100%;
+    height: calc((var(--row-max-height) - 2.5rem) / 4);
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--black);
+
+}
+
+.profile-page__minutes-per-game-list-item:last-of-type {
+    border-bottom: none;
+    margin-bottom: auto;
+}
+
+.profile-page__minutes-per-game-list-item-icon {
+    height: auto;
+    width: 50px;
+}
+
+.profile-page__minutes-per-game-list-title {
+    font-size: var(--font-size-l);
 }
 
 .profile-page__total-minute-tracker {

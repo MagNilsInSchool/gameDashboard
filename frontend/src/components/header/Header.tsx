@@ -3,8 +3,7 @@ import SearchGroup from "../SearchGroup/SearchGroup";
 import WeatherDisplay from "../WeatherDisplay/WeatherDisplay";
 import "./header.css";
 
-interface Props {}
-const Header: React.FC<Props> = () => {
+const Header: React.FC = () => {
     return (
         <header className="header">
             <div className="header__wrapper wrapper--max-width">

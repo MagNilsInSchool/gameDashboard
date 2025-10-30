@@ -53,7 +53,11 @@
         cursor: pointer;
     }
 
+    .cta-button--dark:hover {
+        background-color: #84845F;
+    }
+
     .cta-button--light:hover {
-        background-color: rgb(243, 242, 242);
+        background-color: #84845f2a;
     }
 }

@@ -1,10 +1,24 @@
 .input-field {
     display: grid;
-    gap: var(--spacing-s);
+    min-height: 5rem;
+    grid-template-rows: auto auto 1fr;
+    position: relative;
+
 }
 
 .input-field__input {
     padding: var(--spacing-s);
     border: var(--border);
     border-radius: 4px;
+    margin-top: var(--spacing-xs);
+}
+
+.input-field__error {
+    color: var(--color-error);
+    font-weight: 600;
+    font-size: var(--font-size-s);
+    top: 2px;
+    position: absolute;
+    grid-row: 3 / 4;
+
 }

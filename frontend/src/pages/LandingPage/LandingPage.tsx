@@ -1,25 +1,30 @@
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import "./landingPage.css";
+import type { iUser } from "../../interfaces/user";
+import { useGetUsers } from "../../api/queries/users/useUsers";
+import Loader from "../../components/Loader/Loader";
+import { useEffect } from "react";
+import { handleApiError } from "../../api/errorHandler/handleApiErrors";
+import { useNavigate } from "react-router-dom";
+import useToastStore from "../../stores/toastStore";
 
 const LandingPage = () => {
-    const users = [
-        { id: 1, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 2, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 3, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 4, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 5, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 6, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 7, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-        { id: 8, firstName: "Bean", lastName: "Beanarius", src: "/assets/icons/user-filled.svg" },
-    ];
+    const navigate = useNavigate();
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
+    const { data, isError, error, isLoading } = useGetUsers();
+
+    useEffect(() => {
+        if (isError) handleApiError(error, navigate, setToastInfo);
+    }, [isError, error, navigate]);
+
+    if (isLoading) return <Loader />;
+
     return (
-        <main className="shared-page-style">
-            <div className="landing-page wrapper--max-width">
-                {users.map((user) => (
-                    <ProfileCard user={user} key={user.id} />
-                ))}
-            </div>
-        </main>
+        <div className="landing-page wrapper--max-width">
+            {data?.map((user: iUser) => (
+                <ProfileCard user={user} key={user.id} />
+            ))}
+        </div>
     );
 };
 

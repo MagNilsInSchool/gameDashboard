@@ -5,8 +5,20 @@ interface Props {
     labelText: string;
     type?: "text" | "email";
     autoComplete?: "off" | "given-name" | "family-name" | "email";
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    errorMessage?: string;
 }
-const InputField: React.FC<Props> = ({ name, placeholder, labelText, type = "text", autoComplete = "off" }) => {
+const InputField: React.FC<Props> = ({
+    name,
+    placeholder,
+    labelText,
+    type = "text",
+    autoComplete = "off",
+    value,
+    onChange,
+    errorMessage,
+}) => {
     return (
         <label htmlFor={name} className="input-field">
             {labelText}
@@ -15,12 +27,12 @@ const InputField: React.FC<Props> = ({ name, placeholder, labelText, type = "tex
                 type={type}
                 name={name}
                 id={name}
+                onChange={onChange}
                 placeholder={placeholder}
                 autoComplete={autoComplete}
-                min={2}
-                max={30}
-                required
+                value={value}
             />
+            {errorMessage && <p className="input-field__error">{errorMessage}</p>}
         </label>
     );
 };

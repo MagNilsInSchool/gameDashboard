@@ -1,0 +1,43 @@
+.game-leaderboard {
+    position: relative;
+    background-color: var(--main-200);
+    flex: 1;
+    border-radius: 1rem;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+}
+
+.game-leaderboard__title {
+    grid-column: 1/-1;
+    place-self: center;
+}
+
+.game-leaderboard__entry-category {
+    border-bottom: 1px solid var(--main-300);
+    align-self: center;
+}
+
+.game-leaderboard__entry-data,
+.game-leaderboard__entry-category {
+    padding: .5rem .75rem;
+    border-right: 1px solid var(--main-300);
+    align-self: center;
+}
+
+.game-leaderboard__entry {
+    grid-column: 1/-1;
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: subgrid;
+    border-bottom: 1px solid var(--main-300);
+}
+
+.game-leaderboard__entry:last-of-type {
+    border-bottom: none;
+}
+
+.game-leaderboard__entry-data:last-of-type,
+.game-leaderboard__entry-category:last-of-type {
+    border-right: none;
+}

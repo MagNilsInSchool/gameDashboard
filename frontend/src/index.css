@@ -1,13 +1,17 @@
 :root {
     --main-100: #fff;
     --main-200: #EEEEEE;
-    --main-300: #CCCCCC;
-    --main-400: #666666;
+    --main-300: rgb(204, 204, 204);
+    --main-400: rgb(102, 102, 102);
     --white: #fff;
-    --black: #282D32;
+    --black: rgb(40, 45, 50);
 
     --accent1: #DC4031;
     --accent2: #F4D57A;
+
+    --color-error: #FF0000;
+    --color-success: #008000;
+    --color-info: #FFB700;
 
     --3d-shadow: inset 2px 2px 0 0 rgba(255, 255, 255, 0.2), inset -3px -3px 0 0 rgba(0, 0, 0, 0.15);
     --3d-shadow-big: inset 3px 3px 0 0 rgba(255, 255, 255, 0.2), inset -4px -4px 0 0 rgba(0, 0, 0, 0.15);
@@ -88,9 +92,10 @@ h6 {
 }
 
 .shared-page-style {
+    position: relative;
     background-color: var(--main-100);
     grid-column: 2/3;
-    padding-block: var(--spacing-xxxxl)
+    padding-block: var(--spacing-xxxxl);
 }
 
 .sr-only {
