@@ -4,7 +4,6 @@ import {
     deleteGame,
     getGame,
     getGames,
-    getWeeklyGameStats,
     getWeeklyGamesStats,
     updateGame,
 } from "../handlers/gamesHandler.ts";
@@ -15,8 +14,8 @@ gamesRoute.get("/", getGames);
 gamesRoute.post("/", createGame);
 gamesRoute.get("/weekly/stats/", getWeeklyGamesStats);
 
-// Param routes.
+//! Param routes.
 gamesRoute.get("/:id", getGame);
-gamesRoute.get("/weekly/stats/:id", getWeeklyGameStats);
+// gamesRoute.get("/weekly/stats/:id", getWeeklyGameStats);
 gamesRoute.delete("/:id", deleteGame);
 gamesRoute.put("/:id", updateGame);

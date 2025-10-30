@@ -6,6 +6,7 @@ export const useGetGames = (normalizedTitle?: string) => {
         queryKey: ["games", normalizedTitle ?? null],
         queryFn: () => getGames(normalizedTitle),
         staleTime: 60_000,
+        retry: false,
         placeholderData: (previousData) => previousData,
     });
 };
@@ -34,7 +35,7 @@ export const useGetWeeklyGamesStats = () => {
     return useQuery({
         queryKey: ["weeklygamestats"],
         queryFn: () => getWeeklyGamesStats(),
-        staleTime: 30_000,
+        staleTime: 10_000,
         placeholderData: (previousData) => previousData,
     });
 };

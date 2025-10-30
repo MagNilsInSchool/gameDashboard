@@ -7,6 +7,9 @@ import { gameStatCreationSchema, gameStatFilterSchema } from "../schemas/gameSta
 
 const prisma = new PrismaClient();
 
+// @desc: GET fetch all gamesessions.
+// @query: Optional filtering on gameId and or userId.
+// @route /gamestats
 export const getGamesStats = async (req: Request, res: Response) => {
     try {
         const validatedGameStatFilter = gameStatFilterSchema.safeParse(req.query);
@@ -62,6 +65,9 @@ export const getGamesStats = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: GET fetch specific gamesession.
+// @params: id of session.
+// @route /gamestats/:id
 export const getGameStat = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
@@ -92,6 +98,9 @@ export const getGameStat = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: DELETE specific gamesession.
+// @params: id of session.
+// @route /gamestats/:id
 export const deleteGameStat = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
@@ -121,6 +130,9 @@ export const deleteGameStat = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: POST create gamesession. Done in transaction to make sure both game and user exist. If user already has an active session it is ended before creating a new session.
+// @body: gameId and userId.
+// @route /gamestats
 export const createGameStat = async (req: Request, res: Response) => {
     try {
         const validatedGameStat = gameStatCreationSchema.safeParse(req.body);
@@ -168,6 +180,10 @@ export const createGameStat = async (req: Request, res: Response) => {
     }
 };
 
+//! If .env has DEV_MODE="true" then seconds are multiplied by 60.
+// @desc: PATCH ends active gamesession. Makes sure session exists and isn't already ended. timePlayed is then the difference between endedAt and createdAt in seconds.
+// @params: sessionId
+// @route /gamestats/:id
 export const endGameSession = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);

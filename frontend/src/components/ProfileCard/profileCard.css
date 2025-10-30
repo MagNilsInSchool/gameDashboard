@@ -4,7 +4,6 @@
     max-width: 17rem;
     width: 100%;
     row-gap: var(--spacing-l);
-    cursor: pointer;
     transition: all .15s ease-in-out;
 }
 
@@ -21,7 +20,7 @@
 }
 
 @media (pointer: fine) {
-    .profile-card:hover {
+    .profile-card--hover:hover {
         transform: scale(1.03) translateY(-5px);
         cursor: pointer;
 
