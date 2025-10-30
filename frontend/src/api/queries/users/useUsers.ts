@@ -6,6 +6,7 @@ export const useGetUsers = (normalizedName?: string) => {
         queryKey: ["users", normalizedName ?? null],
         queryFn: () => getUsers(normalizedName),
         staleTime: 10_000,
+        retry: false,
         placeholderData: (previousData) => previousData,
     });
 };

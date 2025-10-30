@@ -1,5 +1,5 @@
 .no-games-played {
     position: absolute;
     place-self: center;
-
+    inset: 0;
 }

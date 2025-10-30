@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./profileCard.css";
 import type { iUser } from "../../interfaces/user";
 import useUserStore from "../../stores/userStore";
@@ -10,6 +10,8 @@ interface Props {
 const ProfileCard: React.FC<Props> = ({ user }) => {
     const { setActiveUser } = useUserStore();
     const navigate = useNavigate();
+    const location = useLocation();
+    const isOnProfilePage = location.pathname === `/users/${user.id}`;
 
     const handleProfileCardClick = () => {
         setActiveUser(user);
@@ -17,7 +19,9 @@ const ProfileCard: React.FC<Props> = ({ user }) => {
     };
 
     return (
-        <article className="profile-card" onClick={handleProfileCardClick}>
+        <article
+            className={`profile-card ${!isOnProfilePage ? "profile-card--hover" : ""}`}
+            onClick={!isOnProfilePage ? handleProfileCardClick : undefined}>
             <img
                 className="profile-card__image"
                 src={user && user.image ? user.image : "/assets/icons/user-filled.svg"}

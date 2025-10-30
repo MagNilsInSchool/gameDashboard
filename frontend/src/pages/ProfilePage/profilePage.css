@@ -36,7 +36,8 @@
 
 .profile-page__minutes-per-game-list {
     position: relative;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     max-height: var(--row-max-height);
     height: 100%;
     width: 100%;
@@ -44,16 +45,16 @@
     border-radius: 1rem;
     padding-inline: 1.5rem;
     padding-top: .5rem;
+    overflow-y: auto;
 }
 
 .profile-page__minutes-per-game-list-item {
     width: 100%;
-    height: calc((var(--row-max-height) - 2.5rem) / 4);
+    height: calc((var(--row-max-height) - 2.5rem) / 4.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 3px solid var(--black);
-
 }
 
 .profile-page__minutes-per-game-list-item:last-of-type {
