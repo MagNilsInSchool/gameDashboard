@@ -12,7 +12,7 @@ _Magnus Nilsson_
 
 ## 🛠️ Tech Stacks:
 
-### 🎨 Frontend
+### 🎨 Frontend:
 
 -   React 18 - UI library
 -   TypeScript - Type safety
@@ -27,7 +27,7 @@ _Magnus Nilsson_
 -   CSS - Styling (no CSS frameworks)
 -   Eslint - linting.
 
-### 💾 Backend Tech Stack
+### 💾 Backend:
 
 -   Node.js - Runtime environment
 -   TypeScript - Type safety
