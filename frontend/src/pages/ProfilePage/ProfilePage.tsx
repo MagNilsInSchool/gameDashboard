@@ -12,6 +12,9 @@ import ChartScatter from "../../components/ChartScatter/ChartScatter";
 import ChartLines from "../../components/ChartLines/ChartLines";
 import ChartHorizontalBarWeeklyTotal from "../../components/ChartHorizontalBarWeeklyTotal/ChartHorizontalBarWeeklyTotal";
 import GameLeaderBoard from "../../components/GameLeaderBoard/GameLeaderBoard";
+import { secondsToHMS } from "../../utils/dateAndTime";
+import { useGetWeeklyGamesStats } from "../../api/queries/games/useGames";
+import NoGamesPlayedDisplay from "../../components/NoGamesPlayedDisplay/NoGamesPlayedDisplay";
 
 const ProfilePage: React.FC = () => {
     const setToastInfo = useToastStore((s) => s.setToastInfo);
@@ -26,19 +29,29 @@ const ProfilePage: React.FC = () => {
         isError: isCurrentUserError,
         error: currentUserError,
     } = useGetUser(userId);
+    const {
+        data: sevenDayStats,
+        isLoading: isSevenDayStatsLoading,
+        isError: isSevenDayStatsError,
+        error: sevenDayStatsError,
+    } = useGetWeeklyGamesStats();
 
     useEffect(() => {
-        if (isCurrentUserError && currentUserError) {
-            setToastInfo({ message: currentUserError.message, type: "error" });
+        if (isCurrentUserError || isSevenDayStatsError) {
+            if (currentUserError) setToastInfo({ message: currentUserError.message, type: "error" });
+            if (sevenDayStatsError) setToastInfo({ message: sevenDayStatsError.message, type: "error" });
             navigate("/");
         }
-    }, [isCurrentUserError, currentUserError]);
+    }, [isCurrentUserError, currentUserError, isSevenDayStatsError, sevenDayStatsError]);
 
+    //* Current "logged in" user info:
     const currentUserGameLabels = currentUser?.stats?.map((stat) => stat.title);
     const currentUserGameStats = currentUser?.stats?.map((stat) => stat.totalTimePlayed);
     const currentUserTotalTimePlayed = currentUserGameStats?.reduce((accum, current) => accum + current, 0);
+    const { hours, minutes } = secondsToHMS(currentUserTotalTimePlayed ?? 0);
+    const totalTimePlayedString = hours ? `${hours}h ${minutes}m` : `${minutes}m`;
 
-    if (isCurrentUserLoading) return <Loader />;
+    if (isCurrentUserLoading || isSevenDayStatsLoading) return <Loader />;
 
     return (
         <div className="profile-page wrapper--max-width">
@@ -53,32 +66,36 @@ const ProfilePage: React.FC = () => {
             <section className="profile-page__row-wrapper">
                 <div className="profile-page__column-wrapper">
                     <ul className="profile-page__minutes-per-game-list">
-                        {currentUser?.stats?.map((stat) => {
-                            const userTotalTimePlayed = currentUserTotalTimePlayed ?? 0;
-                            const gameTotalTimePlayed = stat.totalTimePlayed ?? 0;
-                            const percent = Math.round((gameTotalTimePlayed / userTotalTimePlayed) * 100);
-                            const rest = Math.max(0, userTotalTimePlayed - gameTotalTimePlayed);
-                            return (
-                                <li key={stat.gameId} className="profile-page__minutes-per-game-list-item">
-                                    <img
-                                        className="profile-page__minutes-per-game-list-item-icon"
-                                        src="/assets/icons/game-logo.svg"
-                                        alt="Game logotype"
-                                    />
-                                    <h2 className="profile-page__minutes-per-game-list-title">{stat.title}</h2>
-                                    <ChartDoughnut
-                                        labels={[stat.title, "Other"]}
-                                        data={[gameTotalTimePlayed, rest]}
-                                        percent={percent}
-                                    />
-                                </li>
-                            );
-                        })}
+                        {currentUser?.stats && currentUser.stats.length > 0 ? (
+                            currentUser.stats.map((stat) => {
+                                const userTotalTimePlayed = currentUserTotalTimePlayed ?? 0;
+                                const gameTotalTimePlayed = stat.totalTimePlayed ?? 0;
+                                const percent = Math.round((gameTotalTimePlayed / userTotalTimePlayed) * 100);
+                                const rest = Math.max(0, userTotalTimePlayed - gameTotalTimePlayed);
+                                return (
+                                    <li key={stat.gameId} className="profile-page__minutes-per-game-list-item">
+                                        <img
+                                            className="profile-page__minutes-per-game-list-item-icon"
+                                            src="/assets/icons/game-logo.svg"
+                                            alt="Game logotype"
+                                        />
+                                        <h2 className="profile-page__minutes-per-game-list-title">{stat.title}</h2>
+                                        <ChartDoughnut
+                                            labels={[stat.title, "Other"]}
+                                            data={[gameTotalTimePlayed, rest]}
+                                            percent={percent}
+                                        />
+                                    </li>
+                                );
+                            })
+                        ) : (
+                            <NoGamesPlayedDisplay />
+                        )}
                     </ul>
                 </div>
                 <div className="profile-page__column-wrapper profile-page__column-wrapper--split-rows">
                     <article className="profile-page__total-minute-tracker">
-                        <h2 className="profile-page__total-minutes">{`${currentUserTotalTimePlayed} min`}</h2>
+                        <h2 className="profile-page__total-minutes">{totalTimePlayedString}</h2>
                         <p className="profile-page__total-minutes-description">Total time played</p>
                     </article>
                     <div className="profile-page__button-row">
@@ -99,16 +116,20 @@ const ProfilePage: React.FC = () => {
                     </div>
                 </div>
             </section>
-            <section className="profile-page__row-wrapper">
-                <ChartScatter />
 
-                <ChartLines />
-            </section>
-            <section className="profile-page__row-wrapper">
-                <ChartHorizontalBarWeeklyTotal />
+            {sevenDayStats && (
+                <>
+                    <section className="profile-page__row-wrapper">
+                        <ChartScatter gamesData={sevenDayStats} />
+                        <ChartLines gamesData={sevenDayStats} />
+                    </section>
 
-                <GameLeaderBoard />
-            </section>
+                    <section className="profile-page__row-wrapper">
+                        <ChartHorizontalBarWeeklyTotal gamesData={sevenDayStats} />
+                        <GameLeaderBoard gamesData={sevenDayStats} />
+                    </section>
+                </>
+            )}
         </div>
     );
 };

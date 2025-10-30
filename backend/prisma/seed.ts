@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-const randomPastDate = (maxDaysBack = 30) => {
+const randomPastDate = (maxDaysBack = 10) => {
     const now = Date.now();
     const past = now - Math.floor(Math.random() * maxDaysBack * 24 * 60 * 60 * 1000);
     return new Date(past);
@@ -34,10 +34,10 @@ const seed = async () => {
         },
     ];
     const games = [
-        { title: "Grand theft bean", normalizedTitle: "grand theft bean" },
-        { title: "Beany Kong", normalizedTitle: "beany kong" },
-        { title: "Super Bean brothers", normalizedTitle: "super bean brothers" },
-        { title: "Call of beans", normalizedTitle: "call of beans" },
+        { title: "Cyberbean 2077", normalizedTitle: "cyberbean 2077" },
+        { title: "Elden Bean", normalizedTitle: "elden bean" },
+        { title: "Bean Raider", normalizedTitle: "bean raider" },
+        { title: "Call of Beans", normalizedTitle: "call of beans" },
     ];
 
     await prisma.user.createMany({
@@ -59,23 +59,29 @@ const seed = async () => {
         gameId: number;
         timePlayed?: number | null;
         isEnded?: boolean;
-        createdAt?: Date;
+        createdAt: Date;
         endedAt?: Date | null;
     }[] = [];
 
-    for (const user of allUsers) {
-        const playedGames = allGames.slice(0, Math.floor(Math.random() * allGames.length) + 1);
-        for (const g of playedGames) {
-            const createdAt = randomPastDate(30);
+    const minSessionsPerUser = 10;
+    const maxSessionsPerUser = 20;
+    const minSec = 15 * 60;
+    const maxSec = 2 * 60 * 60;
 
-            const minSec = 5 * 60;
-            const maxSec = 3 * 60 * 60;
+    for (const user of allUsers) {
+        const sessionCount =
+            Math.floor(Math.random() * (maxSessionsPerUser - minSessionsPerUser + 1)) + minSessionsPerUser;
+
+        for (let i = 0; i < sessionCount; i++) {
+            const game = allGames[Math.floor(Math.random() * allGames.length)];
+
+            const createdAt = randomPastDate(10);
             const durationSec = Math.floor(Math.random() * (maxSec - minSec + 1)) + minSec;
             const endedAt = new Date(createdAt.getTime() + durationSec * 1000);
 
             stats.push({
                 userId: user.id,
-                gameId: g.id,
+                gameId: game.id,
                 timePlayed: durationSec,
                 isEnded: true,
                 createdAt,

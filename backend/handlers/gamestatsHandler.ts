@@ -173,7 +173,7 @@ export const endGameSession = async (req: Request, res: Response) => {
         const validatedId = postGresIdSchema.safeParse(req.params);
         if (!validatedId.success) throw validatedId.error;
         const id = validatedId.data.id;
-
+        const isDevelopment = process.env.DEV_MODE === "true";
         const now = new Date();
 
         const endedSession = await prisma.$transaction(async (prismaTx) => {
@@ -182,7 +182,9 @@ export const endGameSession = async (req: Request, res: Response) => {
             if (!session) throw new CustomError(`No session with id: ${id}`, 404);
             if (session.isEnded) throw new CustomError(`Session is already ended`, 400);
 
-            const seconds = Math.floor((now.getTime() - session.createdAt.getTime()) / 1000);
+            let seconds = Math.floor((now.getTime() - session.createdAt.getTime()) / 1000);
+
+            if (isDevelopment) seconds = seconds * 60;
 
             const sessionToEnd = await prismaTx.gameStat.update({
                 where: { id },
@@ -203,3 +205,121 @@ export const endGameSession = async (req: Request, res: Response) => {
         return handleError(error, res);
     }
 };
+
+// export const getWeeklyStats = async (req: Request, res: Response) => {
+//     try {
+//         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+//         const where: Prisma.GameStatWhereInput = {
+//             isEnded: true,
+//             OR: [{ createdAt: { gte: oneWeekAgo } }, { endedAt: { gte: oneWeekAgo } }],
+//         };
+
+//         const gameStats = await prisma.gameStat.findMany({
+//             where,
+//             orderBy: { id: "asc" },
+//             select: {
+//                 game: { select: { title: true, id: true } },
+//                 timePlayed: true,
+//             },
+//         });
+
+//         if (gameStats.length === 0) throw new CustomError("No games were played this 7 day period", 404);
+
+//         const aggMap = new Map<number, { gameId: number; title: string; totalTime: number }>();
+
+//         for (const s of gameStats) {
+//             const gameId = s.game.id;
+//             const title = s.game.title ?? "Unknown";
+//             const totalTime = s.timePlayed ?? 0;
+
+//             const existing = aggMap.get(gameId);
+//             if (existing) {
+//                 existing.totalTime += totalTime;
+//             } else {
+//                 aggMap.set(gameId, { gameId, title, totalTime });
+//             }
+//         }
+
+//         const sevenDayAverage = Array.from(aggMap.values())
+//             .map(({ gameId, title, totalTime }) => ({
+//                 gameId,
+//                 title,
+//                 dayAverage: Math.round(totalTime / 7),
+//             }))
+//             .sort((a, b) => b.dayAverage - a.dayAverage);
+
+//         return sendSuccessResponse(res, "Fetched sevenDayAverage successfully.", sevenDayAverage);
+//     } catch (error) {
+//         return handleError(error, res);
+//     }
+// };
+
+// export const getWeeklyLeaderBoard = async (req: Request, res: Response) => {
+//     try {
+//         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+//         const where: Prisma.GameStatWhereInput = {
+//             isEnded: true,
+//             OR: [{ createdAt: { gte: oneWeekAgo } }, { endedAt: { gte: oneWeekAgo } }],
+//         };
+
+//         const gameStats = await prisma.gameStat.findMany({
+//             where,
+//             orderBy: { id: "asc" },
+//             select: {
+//                 game: { select: { title: true, id: true } },
+//                 userId: true,
+//                 user: { select: { firstName: true, lastName: true } },
+//                 timePlayed: true,
+//             },
+//         });
+
+//         if (gameStats.length === 0) throw new CustomError("No games were played this 7 day period", 404);
+
+//         const perGamePerUser = new Map<
+//             number,
+//             Map<number, { userId: number; user: string; title: string; totalTime: number }>
+//         >();
+
+//         for (const s of gameStats) {
+//             const gameId = s.game.id;
+//             const userId = s.userId;
+//             const title = s.game.title ?? "Unknown";
+//             const totalTime = s.timePlayed ?? 0;
+
+//             const user = s.user.firstName && s.user.lastName ? `${s.user.firstName} ${s.user.lastName}` : "Unknown";
+
+//             const existingGame = perGamePerUser.get(gameId);
+//             if (existingGame) {
+//                 const existingUserGameSession = existingGame.get(userId);
+//                 if (existingUserGameSession) {
+//                     existingUserGameSession.totalTime += totalTime;
+//                     existingGame.set(userId, existingUserGameSession);
+//                 } else {
+//                     existingGame.set(userId, { userId, user, title, totalTime });
+//                 }
+//             } else {
+//                 const userMap = new Map<number, { userId: number; user: string; title: string; totalTime: number }>();
+//                 userMap.set(userId, { userId, user, title, totalTime });
+//                 perGamePerUser.set(gameId, userMap);
+//             }
+//         }
+
+//         const totalPerPlayerPerGame = Array.from(perGamePerUser.entries()).map(([gameId, userMap]) => ({
+//             gameId,
+//             players: Array.from(userMap.values()).sort((a, b) => b.totalTime - a.totalTime),
+//         }));
+
+//         const topPlayerPerGame = totalPerPlayerPerGame.map((gp) => ({
+//             gameId: gp.gameId ?? null,
+//             game: gp.players[0].title ?? null,
+//             user: gp.players[0].user ?? null,
+//             played: gp.players[0].totalTime ?? null,
+//         }));
+
+//         return sendSuccessResponse(res, "Fetched leaderboard successfully.", topPlayerPerGame);
+//     } catch (error) {
+//         return handleError(error, res);
+//     }
+// };

@@ -32,18 +32,11 @@
     gap: 2rem;
 }
 
-.profile-page__total-played-bar-chart {
-    max-height: var(--row-max-height);
-    width: 100%;
-    background-color: var(--main-200);
-    border-radius: 1rem;
-    padding: 1rem;
-    grid-column: span 2;
-}
+
 
 .profile-page__minutes-per-game-list {
-    display: flex;
-    flex-direction: column;
+    position: relative;
+    display: grid;
     max-height: var(--row-max-height);
     height: 100%;
     width: 100%;

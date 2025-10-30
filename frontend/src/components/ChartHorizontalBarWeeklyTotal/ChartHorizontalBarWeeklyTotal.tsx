@@ -12,25 +12,25 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import "./chartHorizontalBarWeeklyTotal.css";
+import { secondsToMinutes } from "../../utils/dateAndTime";
+import type { iGameWeeklyStat } from "../../interfaces/game";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface Props {
-    labels?: string[];
-    data?: number[];
-    height?: number;
+    gamesData: iGameWeeklyStat[];
 }
 
-const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({
-    labels = ["Call of beans", "Beany Kong", "Grand theft bean", "Super Bean brothers"],
-    data = [120, 90, 150, 60],
-}) => {
+const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({ gamesData }) => {
+    const weeklyAveragesTitles = gamesData.map((gameData) => gameData.title);
+    const weeklyAveragesTime = gamesData.map((gameData) => Math.round(secondsToMinutes(gameData.totalPlayed) / 7));
+
     const options: ChartOptions<"bar"> = {
-        indexAxis: "y" as const, // horizontal bars
+        indexAxis: "y" as const,
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { display: false }, // hide legend
+            legend: { display: false },
             tooltip: { enabled: true },
         },
 
@@ -50,11 +50,10 @@ const ChartHorizontalBarWeeklyTotal: React.FC<Props> = ({
     };
 
     const chartData: ChartData<"bar", number[], string> = {
-        labels,
+        labels: weeklyAveragesTitles,
         datasets: [
             {
-                label: "", // no label shown because legend hidden
-                data,
+                data: weeklyAveragesTime,
                 backgroundColor: "rgb(102, 102, 102)",
                 borderWidth: 2,
                 barThickness: 40,

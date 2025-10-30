@@ -10,6 +10,8 @@ import {
 export const gamesStatsRoute = Router();
 
 gamesStatsRoute.get("/", getGamesStats);
+// gamesStatsRoute.get("/weekly/averages", getWeeklyStats);
+// gamesStatsRoute.get("/weekly/leaderboard", getWeeklyLeaderBoard);
 gamesStatsRoute.post("/", createGameStat);
 
 // Param routes.

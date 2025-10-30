@@ -10,6 +10,9 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
+import { secondsToMinutes } from "../../utils/dateAndTime";
+import NoGamesPlayedDisplay from "../NoGamesPlayedDisplay/NoGamesPlayedDisplay";
+import "./chartHorizontalBar.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
@@ -23,9 +26,9 @@ const options = {
     plugins: {
         legend: { display: false },
         datalabels: {
-            anchor: "center", // position relative to bar
-            align: "center", // text position (try "end", "start", "right")
-            formatter: (value: number) => `${value} minutes`, // what to render
+            anchor: "center",
+            align: "center",
+            formatter: (value: number) => `${value} minutes`,
             color: "#fff",
             font: { weight: "600" },
         },
@@ -38,7 +41,6 @@ const options = {
             title: { display: false },
         },
         y: {
-            // keep category labels on y, but remove grid lines if you want
             grid: { display: false },
             border: { display: true, color: "rgb(40, 45, 50)", width: 3 },
             ticks: { autoSkip: false },
@@ -57,7 +59,7 @@ const ChartHorizontalBar: React.FC<Props> = ({ labels, data }) => {
         datasets: [
             {
                 label: "Minutes played",
-                data: data.map((d) => Number(d)),
+                data: data.map((d) => secondsToMinutes(Number(d))),
                 backgroundColor: "rgb(102, 102, 102)",
                 borderWidth: 2,
                 barThickness: 40,
@@ -67,8 +69,12 @@ const ChartHorizontalBar: React.FC<Props> = ({ labels, data }) => {
     };
 
     return (
-        <div className="profile-page__total-played-bar-chart">
-            <Bar data={chartData} options={options} />
+        <div className="profile-total-bar-chart">
+            {data.length > 0 ? (
+                <Bar data={chartData} options={options} />
+            ) : (
+                <NoGamesPlayedDisplay text="No games played." />
+            )}
         </div>
     );
 };
