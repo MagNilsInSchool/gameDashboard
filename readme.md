@@ -162,11 +162,43 @@ gameDashboard/
 
 <br>
 
-## Screenshots of routes:
+## Routes:
+
+_Data is cached with tanstack query._
+
+### Landing page:
+
+Clicking a user makes that user the active user and navigates you to their profile. Active user is stored in session storage. Trying to navigate to profile without having first made an active user will show you a toast message and stop you from navigating.
+
+On landing page the searchbar in header filters userslist with a debounced search. Weather display is the same on all pages. If it fails to fetch it will show an error message. Clicking the message tries to refetch.
+
+Profile carousel by searchbar is just cosmetic. It is not implemented.
 
 ![Showing front-page.](./frontend/public/assets/images/frontpage.jpg)
+
+### Games:
+
+Lists the games in the db. Clicking a game without an active user will show a toast and navigate you back to landing page. If you have an active user you will go to playing page.
+
+Searchbar in header will let you filter games with debounced search.
+
 ![Showing games.](./frontend/public/assets/images/games.jpg)
+
+### Playing:
+
+With a correct userId and gameId you will be able to start a gaming session. Pressing the start button will show a toast if call is succesfull and start a session. If DEV_MODE variable in backend .env is set to "true" every second will be registered as a minute on the backend. Pressing stop will cancel the session. Pressing the profile card will navigate you to respective profile.
+
 ![Showing playing.](./frontend/public/assets/images/playing.jpg)
+
+### Profile:
+
+Shows the total personal history of the users time spent in games presented in different ways.
 ![Showing profile.](./frontend/public/assets/images/profile.jpg)
+
+Shows stats for 7 days back for all users combined.
 ![Showing profile continuation.](./frontend/public/assets/images/profile1.jpg)
+
+### Registration
+
+Form built in tanstack form and validation with zod. Image selector is not implemented so it's just cosmetic. DB rejection error shown as toast (say if you are trying to register an email that already exists.).
 ![Showing profile continuation.](./frontend/public/assets/images/registration.jpg)
