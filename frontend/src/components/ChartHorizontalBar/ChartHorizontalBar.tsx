@@ -11,6 +11,8 @@ import {
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
 import { secondsToMinutes } from "../../utils/dateAndTime";
+import NoGamesPlayedDisplay from "../NoGamesPlayedDisplay/NoGamesPlayedDisplay";
+import "./chartHorizontalBar.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
@@ -67,8 +69,12 @@ const ChartHorizontalBar: React.FC<Props> = ({ labels, data }) => {
     };
 
     return (
-        <div className="profile-page__total-played-bar-chart">
-            <Bar data={chartData} options={options} />
+        <div className="profile-total-bar-chart">
+            {data.length > 0 ? (
+                <Bar data={chartData} options={options} />
+            ) : (
+                <NoGamesPlayedDisplay text="No games played." />
+            )}
         </div>
     );
 };

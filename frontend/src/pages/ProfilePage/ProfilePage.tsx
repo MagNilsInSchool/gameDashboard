@@ -14,6 +14,7 @@ import ChartHorizontalBarWeeklyTotal from "../../components/ChartHorizontalBarWe
 import GameLeaderBoard from "../../components/GameLeaderBoard/GameLeaderBoard";
 import { secondsToHMS } from "../../utils/dateAndTime";
 import { useGetWeeklyGamesStats } from "../../api/queries/games/useGames";
+import NoGamesPlayedDisplay from "../../components/NoGamesPlayedDisplay/NoGamesPlayedDisplay";
 
 const ProfilePage: React.FC = () => {
     const setToastInfo = useToastStore((s) => s.setToastInfo);
@@ -65,27 +66,31 @@ const ProfilePage: React.FC = () => {
             <section className="profile-page__row-wrapper">
                 <div className="profile-page__column-wrapper">
                     <ul className="profile-page__minutes-per-game-list">
-                        {currentUser?.stats?.map((stat) => {
-                            const userTotalTimePlayed = currentUserTotalTimePlayed ?? 0;
-                            const gameTotalTimePlayed = stat.totalTimePlayed ?? 0;
-                            const percent = Math.round((gameTotalTimePlayed / userTotalTimePlayed) * 100);
-                            const rest = Math.max(0, userTotalTimePlayed - gameTotalTimePlayed);
-                            return (
-                                <li key={stat.gameId} className="profile-page__minutes-per-game-list-item">
-                                    <img
-                                        className="profile-page__minutes-per-game-list-item-icon"
-                                        src="/assets/icons/game-logo.svg"
-                                        alt="Game logotype"
-                                    />
-                                    <h2 className="profile-page__minutes-per-game-list-title">{stat.title}</h2>
-                                    <ChartDoughnut
-                                        labels={[stat.title, "Other"]}
-                                        data={[gameTotalTimePlayed, rest]}
-                                        percent={percent}
-                                    />
-                                </li>
-                            );
-                        })}
+                        {currentUser?.stats && currentUser.stats.length > 0 ? (
+                            currentUser.stats.map((stat) => {
+                                const userTotalTimePlayed = currentUserTotalTimePlayed ?? 0;
+                                const gameTotalTimePlayed = stat.totalTimePlayed ?? 0;
+                                const percent = Math.round((gameTotalTimePlayed / userTotalTimePlayed) * 100);
+                                const rest = Math.max(0, userTotalTimePlayed - gameTotalTimePlayed);
+                                return (
+                                    <li key={stat.gameId} className="profile-page__minutes-per-game-list-item">
+                                        <img
+                                            className="profile-page__minutes-per-game-list-item-icon"
+                                            src="/assets/icons/game-logo.svg"
+                                            alt="Game logotype"
+                                        />
+                                        <h2 className="profile-page__minutes-per-game-list-title">{stat.title}</h2>
+                                        <ChartDoughnut
+                                            labels={[stat.title, "Other"]}
+                                            data={[gameTotalTimePlayed, rest]}
+                                            percent={percent}
+                                        />
+                                    </li>
+                                );
+                            })
+                        ) : (
+                            <NoGamesPlayedDisplay />
+                        )}
                     </ul>
                 </div>
                 <div className="profile-page__column-wrapper profile-page__column-wrapper--split-rows">
