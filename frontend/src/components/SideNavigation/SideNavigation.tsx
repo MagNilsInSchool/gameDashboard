@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import "./sideNavigation.css";
 import useUserStore from "../../stores/userStore";
+import useToastStore from "../../stores/toastStore";
 
 const SideNavigation = () => {
     const location = useLocation();
-    const { activeUser } = useUserStore();
+    const activeUser = useUserStore((s) => s.activeUser);
+    const setToastInfo = useToastStore((s) => s.setToastInfo);
 
     const routes = [
         {
@@ -29,6 +31,7 @@ const SideNavigation = () => {
             alt: "Silhouette of one person.",
         },
     ];
+
     return (
         <aside className="side-navigation">
             <nav className="side-navigation__wrapper">
@@ -39,7 +42,18 @@ const SideNavigation = () => {
                                 location.pathname === route.route ? "" : "side-navigation__list-item--inactive"
                             }`}
                             key={route.route}>
-                            <Link className="side-navigation__link" to={route.route}>
+                            <Link
+                                className="side-navigation__link"
+                                to={route.route}
+                                onClick={
+                                    route.route === ""
+                                        ? () =>
+                                              setToastInfo({
+                                                  type: "info",
+                                                  message: "You have to select a user first.",
+                                              })
+                                        : undefined
+                                }>
                                 <img
                                     className="side-navigation__link-icon"
                                     src={location.pathname === route.route ? route.activeSrc : route.inactiveSrc}

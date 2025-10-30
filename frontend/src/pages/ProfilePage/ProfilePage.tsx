@@ -42,7 +42,7 @@ const ProfilePage: React.FC = () => {
             if (sevenDayStatsError) setToastInfo({ message: sevenDayStatsError.message, type: "error" });
             navigate("/");
         }
-    }, [isCurrentUserError, currentUserError, isSevenDayStatsError, sevenDayStatsError]);
+    }, [isCurrentUserError, currentUserError, isSevenDayStatsError, sevenDayStatsError, setToastInfo, navigate]);
 
     //* Current "logged in" user info:
     const currentUserGameLabels = currentUser?.stats?.map((stat) => stat.title);

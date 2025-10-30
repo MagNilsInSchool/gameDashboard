@@ -64,6 +64,8 @@ const ChartHorizontalBar: React.FC<Props> = ({ labels, data }) => {
                 borderWidth: 2,
                 barThickness: 40,
                 borderSkipped: false,
+                responsive: true,
+                maintainAspectRatio: false,
             },
         ],
     };

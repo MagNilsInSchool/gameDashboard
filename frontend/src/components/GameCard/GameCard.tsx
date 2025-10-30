@@ -9,6 +9,7 @@ interface Props {
 const GameCard: React.FC<Props> = ({ game, userId }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const isOnGamespage = location.pathname === "/games";
     const setToast = useToastStore((s) => s.setToastInfo);
     const imageSrc = game.image ? game.image : "/assets/icons/game-logo.svg";
 
@@ -19,13 +20,12 @@ const GameCard: React.FC<Props> = ({ game, userId }) => {
             return;
         }
         if (location.pathname === `/games/play/${game.id}/${userId}`) {
-            undefined;
             return;
         }
         navigate(`/games/play/${game.id}/${userId}`);
     };
     return (
-        <article className="game-card" onClick={handleGameCardClick}>
+        <article className={`game-card ${isOnGamespage ? "game-card--hover" : ""}`} onClick={handleGameCardClick}>
             <img className="game-card__image" src={imageSrc} alt={`Logotype for the game ${game.title}`} />
             <h2 className="game-card__title">{game.title}</h2>
         </article>

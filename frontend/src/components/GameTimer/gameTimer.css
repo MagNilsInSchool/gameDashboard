@@ -27,6 +27,7 @@
 }
 
 .game-timer__time-display {
+    min-width: 8ch;
     font-size: 3rem;
     font-weight: 600;
 }

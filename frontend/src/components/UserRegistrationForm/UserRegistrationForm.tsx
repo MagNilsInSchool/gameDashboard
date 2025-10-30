@@ -10,6 +10,7 @@ import { useRegisterUser } from "../../api/mutations/users/useUsers";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../utils/stringFormat";
 import useToastStore from "../../stores/toastStore";
+import type { ApiErrorWithStatus } from "../../api/errorHandler/handleApiErrors";
 
 const UserRegistrationForm: React.FC = () => {
     const queryClient = useQueryClient();
@@ -42,7 +43,9 @@ const UserRegistrationForm: React.FC = () => {
 
                 navigate("/");
             } catch (error) {
-                const status = axios.isAxiosError(error) ? error.response?.status : (error as any)?.status;
+                const status = axios.isAxiosError(error)
+                    ? error.response?.status
+                    : (error as ApiErrorWithStatus)?.status;
 
                 setToastInfo({
                     message:

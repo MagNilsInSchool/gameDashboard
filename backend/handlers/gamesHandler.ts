@@ -8,6 +8,9 @@ import type { UserStatAggregate } from "../interfaces/index.ts";
 
 const prisma = new PrismaClient();
 
+// @desc: GET fetch all available games.
+// @query: Optional filtering on normalizedTitle.
+// @route /games
 export const getGames = async (req: Request, res: Response) => {
     try {
         const validatedGamesFilter = gameFilterSchema.safeParse(req.query);
@@ -34,6 +37,9 @@ export const getGames = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: GET fetch game based on ID.
+// @param: id of game.
+// @route /games/:id
 export const getGame = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
@@ -51,6 +57,8 @@ export const getGame = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: GET Will only fetch games that have been played last 7 days. Counts sessions and time spent per game and per user. User individual sessions are also returned. Time is returned in seconds.
+// @route /games/weekly/stats/
 export const getWeeklyGamesStats = async (req: Request, res: Response) => {
     try {
         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -130,69 +138,72 @@ export const getWeeklyGamesStats = async (req: Request, res: Response) => {
         return handleError(error, res);
     }
 };
+//! Unused. Fetches just one game.
+// export const getWeeklyGameStats = async (req: Request, res: Response) => {
+//     try {
+//         const validatedId = postGresIdSchema.safeParse(req.params);
+//         if (!validatedId.success) throw validatedId.error;
+//         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-export const getWeeklyGameStats = async (req: Request, res: Response) => {
-    try {
-        const validatedId = postGresIdSchema.safeParse(req.params);
-        if (!validatedId.success) throw validatedId.error;
-        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+//         const game = await prisma.game.findUnique({
+//             where: {
+//                 id: validatedId.data.id,
+//             },
+//             select: {
+//                 id: true,
+//                 title: true,
+//                 stats: {
+//                     where: {
+//                         isEnded: true,
+//                         endedAt: { gte: oneWeekAgo },
+//                     },
+//                     select: {
+//                         userId: true,
+//                         user: { select: { firstName: true, lastName: true } },
+//                         timePlayed: true,
+//                         endedAt: true,
+//                     },
+//                     orderBy: { endedAt: "desc" },
+//                 },
+//             },
+//         });
+//         if (!game)
+//             throw new CustomError(`No stats registered within last week for game with id: ${validatedId.data.id}`, 404);
 
-        const game = await prisma.game.findUnique({
-            where: {
-                id: validatedId.data.id,
-            },
-            select: {
-                id: true,
-                title: true,
-                stats: {
-                    where: {
-                        isEnded: true,
-                        endedAt: { gte: oneWeekAgo },
-                    },
-                    select: {
-                        userId: true,
-                        user: { select: { firstName: true, lastName: true } },
-                        timePlayed: true,
-                        endedAt: true,
-                    },
-                    orderBy: { endedAt: "desc" },
-                },
-            },
-        });
-        if (!game)
-            throw new CustomError(`No stats registered within last week for game with id: ${validatedId.data.id}`, 404);
+//         const statMap = new Map<number, UserStatAggregate>();
 
-        const statMap = new Map<number, UserStatAggregate>();
+//         for (const stat of game.stats) {
+//             const userId = stat.userId;
+//             const name = `${stat.user.firstName} ${stat.user.lastName}`;
+//             const session = {
+//                 timePlayed: stat.timePlayed ?? 0,
+//                 endedAt: stat.endedAt ?? new Date(),
+//             };
 
-        for (const stat of game.stats) {
-            const userId = stat.userId;
-            const name = `${stat.user.firstName} ${stat.user.lastName}`;
-            const session = {
-                timePlayed: stat.timePlayed ?? 0,
-                endedAt: stat.endedAt ?? new Date(),
-            };
+//             const existing = statMap.get(userId);
+//             if (existing) {
+//                 existing.count++;
+//                 existing.totalPlayed += stat.timePlayed ?? 0;
+//                 existing.sessions.push(session);
+//             } else {
+//                 statMap.set(userId, { userId, name, count: 1, totalPlayed: stat.timePlayed ?? 0, sessions: [session] });
+//             }
+//         }
 
-            const existing = statMap.get(userId);
-            if (existing) {
-                existing.count++;
-                existing.totalPlayed += stat.timePlayed ?? 0;
-                existing.sessions.push(session);
-            } else {
-                statMap.set(userId, { userId, name, count: 1, totalPlayed: stat.timePlayed ?? 0, sessions: [session] });
-            }
-        }
+//         const formattedGameSessions = {
+//             ...game,
+//             stats: Array.from(statMap.values()),
+//         };
 
-        const formattedGameSessions = {
-            ...game,
-            stats: Array.from(statMap.values()),
-        };
+//         return sendSuccessResponse(res, "Fetched game successfully.", formattedGameSessions);
+//     } catch (error) {
+//         return handleError(error, res);
+//     }
+// };
 
-        return sendSuccessResponse(res, "Fetched game successfully.", formattedGameSessions);
-    } catch (error) {
-        return handleError(error, res);
-    }
-};
-
+// @desc: POST create a new game.
+// @body: title of game.
+// @route /games
 export const createGame = async (req: Request, res: Response) => {
     try {
         const validatedGame = gameCreationSchema.safeParse(req.body);
@@ -209,6 +220,9 @@ export const createGame = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: DELETE a game.
+// @params: id of game.
+// @route /games/:id
 export const deleteGame = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
@@ -220,6 +234,10 @@ export const deleteGame = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: PUT update a game.
+// @params: id of game.
+// @body: title of game.
+// @route /games/:id
 export const updateGame = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);

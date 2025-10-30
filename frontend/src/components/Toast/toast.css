@@ -35,6 +35,7 @@
 
 .toast__message {
     font-size: 1rem;
+    align-self: center;
 }
 
 .toast__timer {

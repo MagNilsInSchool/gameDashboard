@@ -14,7 +14,7 @@ gamesStatsRoute.get("/", getGamesStats);
 // gamesStatsRoute.get("/weekly/leaderboard", getWeeklyLeaderBoard);
 gamesStatsRoute.post("/", createGameStat);
 
-// Param routes.
+//! Param routes.
 gamesStatsRoute.get("/:id", getGameStat);
 gamesStatsRoute.delete("/:id", deleteGameStat);
 gamesStatsRoute.patch("/:id", endGameSession);
