@@ -25,6 +25,7 @@ const seed = async () => {
             lastName: "Beans",
             email: "only@example.com",
             normalizedName: "only beans",
+            image: "/assets/images/beans.png",
         },
         {
             firstName: "Farty",

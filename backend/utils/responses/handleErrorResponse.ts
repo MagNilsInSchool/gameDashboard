@@ -61,7 +61,8 @@ export const handlePrismaError = (error: unknown, res: Response): boolean => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
         const safeMsg = sanitizeMessage(error.message);
         if (error.code === "P2002") {
-            const target = (error.meta as any)?.target;
+            const meta = error.meta as Record<string, unknown> | undefined;
+            const target = meta?.target;
             const detail = Array.isArray(target) ? `Fields: ${target.join(", ")}` : undefined;
             sendErrorResponse(res, "Unique constraint failed", safeMsg, detail, 409);
             return true;

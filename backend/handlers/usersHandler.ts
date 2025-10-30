@@ -8,6 +8,9 @@ import { postGresIdSchema } from "../schemas/postgresIdSchema.ts";
 
 const prisma = new PrismaClient();
 
+// @desc: GET fetch all available users. Stats are formatted to be one stat per game that counts totalTimePlayed and totalTimesPlayed
+// @query: Optional filtering on normalizedName.
+// @route /users
 export const getUsers = async (req: Request, res: Response) => {
     try {
         const validatedUserFilter = userFilterSchema.safeParse(req.query);
@@ -28,7 +31,13 @@ export const getUsers = async (req: Request, res: Response) => {
         const users = await prisma.user.findMany({
             where,
             orderBy: { id: "asc" },
-            include: {
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                image: true,
+                normalizedName: true,
                 stats: {
                     select: {
                         id: true,
@@ -68,11 +77,7 @@ export const getUsers = async (req: Request, res: Response) => {
 
             const stats = Array.from(aggMap.values()).sort((a, b) => b.totalTimePlayed - a.totalTimePlayed);
 
-            const { stats: _rawStats, ...userWithoutStats } = user;
-            return {
-                ...userWithoutStats,
-                stats,
-            };
+            return { ...user, stats };
         });
 
         return sendSuccessResponse(res, "Fetched users successfully.", formattedUsers);
@@ -81,6 +86,9 @@ export const getUsers = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: GET fetch user based on id. Stats are formatted to be one stat per game that counts totalTimePlayed and totalTimesPlayed
+// @params: userId.
+// @route /users/:id
 export const getUser = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
@@ -134,6 +142,9 @@ export const getUser = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: DELETE user based on id.
+// @params: userId.
+// @route /users/:id
 export const deleteUser = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
@@ -147,6 +158,9 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 };
 
+// @desc: POST create a user. Combine first and last name into "nomalizedName" for easier filtering.
+// @body: firstName, lastName, email and image?, optional string path.
+// @route /users/
 export const createUser = async (req: Request, res: Response) => {
     try {
         const validatedUser = userCreationSchema.safeParse(req.body);
@@ -168,7 +182,10 @@ export const createUser = async (req: Request, res: Response) => {
         return handleError(error, res);
     }
 };
-
+// @desc: PUT update a user. Allows partial update.
+// @params: userId
+// @body: firstName?, lastName?, email? and image?. One field is required.
+// @route /users/:id
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const validatedId = postGresIdSchema.safeParse(req.params);
